@@ -11,3 +11,19 @@ export function getTokenFromStorage() {
 
   return token
 }
+
+export function userExperience(decodedToken: unknown){
+  const decodedUser: any = {}
+  if (decodedToken) {
+    for (const [key, value] of Object.entries(decodedToken)) {
+      let cleanKey = ""
+      if (key.startsWith("http")) {
+        cleanKey = key.split("identity/claims/")[1]
+      } else {
+        cleanKey = key
+      }
+      decodedUser[cleanKey] = value
+    }
+  }
+  return decodedUser
+}

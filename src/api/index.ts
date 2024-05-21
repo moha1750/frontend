@@ -12,6 +12,7 @@ const api = axios.create({
   baseURL
 })
 
+
 // use this to handle errors gracefully
 // api.interceptors.response.use(
 //   (response) => response,
