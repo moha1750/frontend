@@ -18,6 +18,7 @@ export type Product = {
   image: string
   description: string
   categoryId: string
+  status: string
 }
 export type Order = {
   id: string

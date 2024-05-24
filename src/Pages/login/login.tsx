@@ -107,7 +107,7 @@ export function Login() {
       </div>
       <div className="hidden bg-muted lg:block">
         <img
-          src="https://images.photowall.com/products/60733/tiger-4.jpg?h=699&q=85"
+          src="https://i.ibb.co/DtV5LGK/Screenshot-2024-05-19-at-23-22-46.png"
           alt=""
           width="1920"
           height="1080"

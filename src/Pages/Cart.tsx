@@ -4,11 +4,20 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { ShoppingCart } from "lucide-react"
 import { useContext } from "react"
 import { GlobalContext } from "@/routes/Router"
+import { Products } from "./Products"
 
 export function Cart() {
   const context = useContext(GlobalContext)
   if (!context) throw Error("")
-  const { state, handleDeleteFromCart } = context
+  const { state, handleDeleteFromCart, handleAddToCart } = context
+
+  const groups = state.cart.reduce((acc, obj) => {
+    const key = obj.id
+    const curGroup = acc[key] ?? []
+    return { ...acc, [key]: [...curGroup, obj] }
+  }, {})
+  const keys = Object.keys(groups)
+
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -27,16 +36,22 @@ export function Cart() {
           <ShoppingCart className="size-5 " />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-80">
+      <PopoverContent className="w-300">
         <div>
-          {state.cart.length > 0 ? (
-            state.cart.map((Product) => {
+          {Object.keys(groups).length > 0 ? (
+            Object.keys(groups).map((key) => {
+              const Products = groups[key]
+              const Product = Products[0]
               return (
                 <div className="mb-4 flex items-center gap-4" key={Product.id}>
                   <img className="w-10 h-10 object-contain" src={Product.image} alt="" />
                   <h3>{Product.name}</h3>
-                  <Button variant="destructive" onClick={() => handleDeleteFromCart(Product.id)}>
-                    x
+                  <Button variant="outline" onClick={() => handleDeleteFromCart(Product.id)}>
+                    -
+                  </Button>
+                  <span className="font-bold">{Product.length}</span>
+                  <Button variant="outline" onClick={() => handleAddToCart(Product)}>
+                    +
                   </Button>
                 </div>
               )

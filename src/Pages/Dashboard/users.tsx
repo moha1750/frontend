@@ -61,15 +61,17 @@ import { User } from "@/types"
 import { DeleteDialog } from "@/components/deletDailog"
 import { useContext } from "react"
 import { GlobalContext } from "@/routes/Router"
+import { SearchInput } from "@/components/search"
 
 export function UsersDash() {
   const context = useContext(GlobalContext)
   if (!context) throw Error("")
-  const { state, handleStoreUser } = context
+  const { state, handleLogoutUser } = context
+
   const getUsers = async () => {
     try {
       const token = localStorage.getItem("token")
-      const res = await api.get("/users", {
+      const res = await api.get(`/users?sort=0&search=${state.search}`, {
         headers: { Authorization: `Bearer ${token}` }
       })
       return res.data
@@ -77,6 +79,14 @@ export function UsersDash() {
       console.error(error)
       return Promise.reject(new Error("Something went wrong"))
     }
+  }
+  const handleLogout = () => {
+    if (typeof window !== undefined) {
+      window.location.reload()
+    }
+    localStorage.removeItem("token")
+    localStorage.removeItem("user")
+    handleLogoutUser()
   }
 
   // Queries
@@ -253,12 +263,7 @@ export function UsersDash() {
             </BreadcrumbList>
           </Breadcrumb>
           <div className="relative ml-auto flex-1 md:grow-0">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              type="search"
-              placeholder="Search..."
-              className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
-            />
+            <SearchInput />
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -278,7 +283,7 @@ export function UsersDash() {
               <DropdownMenuItem>Settings</DropdownMenuItem>
               <DropdownMenuItem>Support</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Logout</DropdownMenuItem>
+              <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </header>

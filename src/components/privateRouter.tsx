@@ -6,8 +6,10 @@ import { userExperience } from "@/lib/utils"
 
 export function PrivateRouter({ children }: { children: ReactElement }) {
   const token = localStorage.getItem("token") || ""
-  const decodedToken = jwt(token)
 
+  if (!token) return <Navigate to="/" />
+
+  const decodedToken = jwt(token)
   const decodedUser = userExperience(decodedToken)
   return decodedUser.role === 0 ? <Navigate to="/" /> : children
 }

@@ -36,7 +36,7 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { Link, Search } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import {
   Breadcrumb,
   BreadcrumbList,
@@ -54,15 +54,96 @@ import {
   Settings,
   PanelLeft,
   ChevronLeft,
-  Badge,
   PlusCircle,
   Upload,
   Home,
-  HomeIcon,
   LayoutDashboardIcon
 } from "lucide-react"
+import { GlobalContext } from "@/routes/Router"
+import { ChangeEvent, FormEvent, useContext, useState } from "react"
+import { SearchInput } from "@/components/search"
+import api from "@/api"
+import { useQuery } from "@tanstack/react-query"
+import { Category } from "@/types"
+import { Value } from "@radix-ui/react-select"
 
 export function EditProducts() {
+  const [product, setProduct] = useState({
+    name: "",
+    image: "",
+    description: "",
+    categoryId: "",
+    status: "Draft"
+  })
+  const context = useContext(GlobalContext)
+  if (!context) throw Error("Context is Missing")
+  const { handleLogoutUser } = context
+
+  const getCategories = async () => {
+    try {
+      const token = localStorage.getItem("token")
+      const res = await api.get("/categories", {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      return res.data
+    } catch (error) {
+      console.error(error)
+      return Promise.reject(new Error("Something went wrong"))
+    }
+  }
+  const { data: categories, error: catError } = useQuery<Category[]>({
+    queryKey: ["categories"],
+    queryFn: getCategories
+  })
+
+  // const productWithCat = products?.map((product) => {
+  //   const category = categories?.find((cat) => cat.id === product.categoryId)
+  //   console.log(category)
+  //   if (category) {
+  //     return {
+  //       ...product,
+  //       categoryId: category.name
+  //     }
+  //   }
+  //   return product
+  // })
+  const handleLogout = () => {
+    if (typeof window !== undefined) {
+      window.location.reload()
+    }
+    localStorage.removeItem("token")
+    localStorage.removeItem("user")
+    handleLogoutUser()
+  }
+  const handleAddProduct = async () => {
+    try {
+      const token = localStorage.getItem("token")
+      const res = await api.post("/products", product, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      return res.data
+    } catch (error) {
+      console.error(error)
+      return Promise.reject(new Error("Product already exists "))
+    }
+  }
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    console.log(value)
+    setProduct({
+      ...product,
+      [name]: value
+    })
+  }
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault()
+    await handleAddProduct()
+  }
+
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
       <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
@@ -242,12 +323,7 @@ export function EditProducts() {
             </BreadcrumbList>
           </Breadcrumb>
           <div className="relative ml-auto flex-1 md:grow-0">
-            {/* <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" /> */}
-            <Input
-              type="search"
-              placeholder="Search..."
-              className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
-            />
+            <SearchInput />
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -267,7 +343,7 @@ export function EditProducts() {
               <DropdownMenuItem>Settings</DropdownMenuItem>
               <DropdownMenuItem>Support</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Logout</DropdownMenuItem>
+              <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </header>
@@ -278,6 +354,7 @@ export function EditProducts() {
                 <ChevronLeft className="h-4 w-4" />
                 <span className="sr-only">Back</span>
               </Button>
+
               <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
                 Product Controller
               </h1>
@@ -285,201 +362,135 @@ export function EditProducts() {
                 <Button variant="outline" size="sm">
                   Discard
                 </Button>
-                <Button size="sm">Save Product</Button>
+                <Button onClick={handleSubmit} size="sm">
+                  Save Product
+                </Button>
               </div>
             </div>
-            <div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8">
-              <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8">
-                <Card x-chunk="dashboard-07-chunk-0">
-                  <CardHeader>
-                    <CardTitle>Product Details</CardTitle>
-                    <CardDescription>Add Product</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid gap-6">
-                      <div className="grid gap-3">
-                        <Label htmlFor="name">Product&apos;s Name</Label>
+            <form action="POST" onSubmit={handleSubmit}>
+              <div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8">
+                <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8">
+                  <Card x-chunk="dashboard-07-chunk-0">
+                    <CardHeader>
+                      <CardTitle>Product Details</CardTitle>
+                      <CardDescription>Add Product</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid gap-6">
+                        <div className="grid gap-3">
+                          <Label htmlFor="name">Product&apos;s Name</Label>
+                          <Input
+                            id="name"
+                            name="name"
+                            type="text"
+                            className="w-full"
+                            placeholder="write The Product's Name here "
+                            onChange={handleChange}
+                          />
+                        </div>
+                        <div className="grid gap-3">
+                          <Label htmlFor="description">Description</Label>
+                          <Input
+                            name="description"
+                            id="description"
+                            placeholder="Product Description "
+                            className="min-h-32"
+                            onChange={handleChange}
+                          />
+                          <Card x-chunk="dashboard-07-chunk-3">
+                            <CardHeader>
+                              <CardTitle>Product Category</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                              <div className="grid gap-6 ">
+                                <div className="grid gap-3">
+                                  <Label htmlFor="category">Category</Label>
+                                  <Select
+                                    onValueChange={(value) => {
+                                      setProduct({
+                                        ...product,
+                                        categoryId: value
+                                      })
+                                    }}
+                                  >
+                                    <SelectTrigger id="category" aria-label="Select category">
+                                      <SelectValue placeholder="Select category" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {categories?.map((category) => (
+                                        <SelectItem key={category.name} value={category.id}>
+                                          {category.name}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  <Card x-chunk="dashboard-07-chunk-3">
+                    <CardHeader>
+                      <CardTitle>Product Status</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid gap-6">
+                        <div className="grid gap-3">
+                          <Label htmlFor="status">Status</Label>
+                          <Select
+                            onValueChange={(value) => {
+                              setProduct({ ...product, status: value })
+                              console.log(product)
+                            }}
+                          >
+                            <SelectTrigger id="status" aria-label="Select status">
+                              <SelectValue placeholder="Select status" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="Draft">Draft</SelectItem>
+                              <SelectItem value="Active">Active</SelectItem>
+                              <SelectItem value="Archived">Archived</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+                <div className="grid auto-rows-max items-start gap-4 lg:gap-8">
+                  <Card className="overflow-hidden" x-chunk="dashboard-07-chunk-4">
+                    <CardHeader>
+                      <CardTitle>Product Images</CardTitle>
+                      <CardDescription>Add Product&apos;s Images here.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid gap-2">
                         <Input
-                          id="name"
-                          type="text"
-                          className="w-full"
-                          defaultValue="write The Product's Name here "
-                        />
+                          onChange={handleChange}
+                          name="image"
+                          placeholder=" insert image Url here"
+                        ></Input>
                       </div>
-                      <div className="grid gap-3">
-                        <Label htmlFor="description">Description</Label>
-                        <Textarea
-                          id="description"
-                          defaultValue="Product Description "
-                          className="min-h-32"
-                        />
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-                <Card x-chunk="dashboard-07-chunk-1">
-                  <CardHeader>
-                    <CardTitle>Stock</CardTitle>
-                    <CardDescription>Add to your Stock</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Price</TableHead>
-                          <TableHead>Quantity</TableHead>
-                          <TableHead>Size</TableHead>
-                          <TableHead>Color</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        <TableRow>
-                          <TableCell>
-                            <Label htmlFor="price-1" className="sr-only">
-                              Price
-                            </Label>
-                            <Input id="price-1" type="number" defaultValue="" />
-                          </TableCell>
-                          <TableCell>
-                            <Label htmlFor="stock-1" className="sr-only">
-                              Quantity
-                            </Label>
-                            <Input id="stock-1" type="number" defaultValue="" />
-                          </TableCell>
-                          <TableCell>
-                            <ToggleGroup type="single" defaultValue="s" variant="outline">
-                              <ToggleGroupItem value="s">S</ToggleGroupItem>
-                              <ToggleGroupItem value="m">M</ToggleGroupItem>
-                              <ToggleGroupItem value="l">L</ToggleGroupItem>
-                            </ToggleGroup>
-                            <TableCell>
-                              <Label htmlFor="stock-1" className="sr-only">
-                                Color
-                              </Label>
-                              <Input id="stock-1" type="number" defaultValue="" />
-                            </TableCell>
-                          </TableCell>
-                        </TableRow>
-                      </TableBody>
-                    </Table>
-                  </CardContent>
-                  <CardFooter className="justify-center border-t p-4">
-                    <Button size="sm" variant="ghost" className="gap-1">
-                      <PlusCircle className="h-3.5 w-3.5" />
-                      Update Stock.
-                    </Button>
-                  </CardFooter>
-                </Card>
-                <Card x-chunk="dashboard-07-chunk-2">
-                  <CardHeader>
-                    <CardTitle>Product Category</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid gap-6 sm:grid-cols-3">
-                      <div className="grid gap-3">
-                        <Label htmlFor="category">Category</Label>
-                        <Select>
-                          <SelectTrigger id="category" aria-label="Select category">
-                            <SelectValue placeholder="Select category" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="clothing">Clothing</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div className="grid gap-3">
-                        <Label htmlFor="subcategory">Subcategory (optional)</Label>
-                        <Select>
-                          <SelectTrigger id="subcategory" aria-label="Select subcategory">
-                            <SelectValue placeholder="Select subcategory" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="t-shirts">T-Shirts</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
+                  <Card x-chunk="dashboard-07-chunk-5">
+                    <CardHeader>
+                      <CardTitle>Archive Product</CardTitle>
+                      <CardDescription>to hide your product from view.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <Button size="sm" variant="secondary">
+                        Archive Product
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </div>
               </div>
-              <div className="grid auto-rows-max items-start gap-4 lg:gap-8">
-                <Card x-chunk="dashboard-07-chunk-3">
-                  <CardHeader>
-                    <CardTitle>Product Status</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid gap-6">
-                      <div className="grid gap-3">
-                        <Label htmlFor="status">Status</Label>
-                        <Select>
-                          <SelectTrigger id="status" aria-label="Select status">
-                            <SelectValue placeholder="Select status" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="draft">Draft</SelectItem>
-                            <SelectItem value="published">Active</SelectItem>
-                            <SelectItem value="archived">Archived</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-                <Card className="overflow-hidden" x-chunk="dashboard-07-chunk-4">
-                  <CardHeader>
-                    <CardTitle>Product Images</CardTitle>
-                    <CardDescription>Add Product&apos;s Images here.</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid gap-2">
-                      <img
-                        alt="Product image"
-                        className="aspect-square w-full rounded-md object-cover"
-                        height="300"
-                        src="/placeholder.svg"
-                        width="300"
-                      />
-                      <div className="grid grid-cols-3 gap-2">
-                        <button>
-                          <img
-                            alt="Product image"
-                            className="aspect-square w-full rounded-md object-cover"
-                            height="84"
-                            src="/placeholder.svg"
-                            width="84"
-                          />
-                        </button>
-                        <button>
-                          <img
-                            alt="Product image"
-                            className="aspect-square w-full rounded-md object-cover"
-                            height="84"
-                            src="/placeholder.svg"
-                            width="84"
-                          />
-                        </button>
-                        <button className="flex aspect-square w-full items-center justify-center rounded-md border border-dashed">
-                          <Upload className="h-4 w-4 text-muted-foreground" />
-                          <span className="sr-only">Upload</span>
-                        </button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-                <Card x-chunk="dashboard-07-chunk-5">
-                  <CardHeader>
-                    <CardTitle>Archive Product</CardTitle>
-                    <CardDescription>to hide your product from view.</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div></div>
-                    <Button size="sm" variant="secondary">
-                      Archive Product
-                    </Button>
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
+            </form>
+
             <div className="flex items-center justify-center gap-2 md:hidden">
               <Button variant="outline" size="sm">
                 Discard

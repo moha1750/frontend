@@ -34,8 +34,22 @@ import {
   TableRow
 } from "@/components/ui/table"
 import { Link } from "react-router-dom"
+import { GlobalContext } from "@/routes/Router"
+import { useContext } from "react"
 
 export function Dashboard() {
+  const context = useContext(GlobalContext)
+  if (!context) throw Error("Context is Missing")
+  const { handleLogoutUser } = context
+
+  const handleLogout = () => {
+    if (typeof window !== undefined) {
+      window.location.reload()
+    }
+    localStorage.removeItem("token")
+    localStorage.removeItem("user")
+    handleLogoutUser()
+  }
   return (
     <div className="flex min-h-screen w-full flex-col">
       <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
@@ -136,7 +150,7 @@ export function Dashboard() {
               <DropdownMenuItem>Settings</DropdownMenuItem>
               <DropdownMenuItem>Support</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Logout</DropdownMenuItem>
+              <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

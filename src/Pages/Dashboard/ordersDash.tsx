@@ -1,12 +1,55 @@
-import {File,Home,LayoutDashboardIcon,LineChart,ListFilter,MoreHorizontal,Package,PanelLeft,PlusCircle,Search,Settings,ShoppingCart,Users2} from "lucide-react"
+import {
+  File,
+  Home,
+  LayoutDashboardIcon,
+  LineChart,
+  ListFilter,
+  MoreHorizontal,
+  Package,
+  PanelLeft,
+  PlusCircle,
+  Search,
+  Settings,
+  ShoppingCart,
+  Users2
+} from "lucide-react"
 import { Badge } from "@/components/ui/badge"
-import {Breadcrumb,BreadcrumbItem,BreadcrumbLink,BreadcrumbList,BreadcrumbPage,BreadcrumbSeparator} from "@/components/ui/breadcrumb"
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator
+} from "@/components/ui/breadcrumb"
 import { Button } from "@/components/ui/button"
-import {Card,CardContent,CardDescription,CardFooter,CardHeader,CardTitle} from "@/components/ui/card"
-import {DropdownMenu,DropdownMenuCheckboxItem,DropdownMenuContent,DropdownMenuItem,DropdownMenuLabel,DropdownMenuSeparator,DropdownMenuTrigger} from "@/components/ui/dropdown-menu"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle
+} from "@/components/ui/card"
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import {Table,TableBody,TableCell,TableHead,TableHeader,TableRow} from "@/components/ui/table"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from "@/components/ui/table"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { Link } from "react-router-dom"
@@ -16,8 +59,14 @@ import { DeleteDialog } from "@/components/deletDailog"
 import { useQuery } from "@tanstack/react-query"
 import api from "@/api"
 import { Order } from "@/types"
+import { GlobalContext } from "@/routes/Router"
+import { useContext } from "react"
 
 export function OrdersDash() {
+  const context = useContext(GlobalContext)
+  if (!context) throw Error("")
+  const { handleLogoutUser } = context
+
   const getOrders = async () => {
     try {
       const res = await api.get("/orders")
@@ -28,6 +77,14 @@ export function OrdersDash() {
     }
   }
 
+  const handleLogout = () => {
+    if (typeof window !== undefined) {
+      window.location.reload()
+    }
+    localStorage.removeItem("token")
+    localStorage.removeItem("user")
+    handleLogoutUser()
+  }
   // Queries
   const { data: orders, error } = useQuery<Order[]>({
     queryKey: ["orders"],
@@ -61,9 +118,10 @@ export function OrdersDash() {
 
           <TooltipProvider>
             <Tooltip>
-              <TooltipTrigger asChild>
-              </TooltipTrigger>
-              <TooltipContent side="right"><ShoppingCart className="h-5 w-5" /></TooltipContent>
+              <TooltipTrigger asChild></TooltipTrigger>
+              <TooltipContent side="right">
+                <ShoppingCart className="h-5 w-5" />
+              </TooltipContent>
             </Tooltip>
           </TooltipProvider>
 
@@ -154,7 +212,10 @@ export function OrdersDash() {
                   <Home className="h-5 w-5" />
                   Dashboard
                 </Link>
-                <Link to="#"className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground">
+                <Link
+                  to="#"
+                  className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+                >
                   <ShoppingCart className="h-5 w-5" />
                   Orders
                 </Link>
@@ -224,7 +285,7 @@ export function OrdersDash() {
               <DropdownMenuItem>Settings</DropdownMenuItem>
               <DropdownMenuItem>Support</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Logout</DropdownMenuItem>
+              <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </header>
@@ -265,9 +326,7 @@ export function OrdersDash() {
               <Card x-chunk="dashboard-06-chunk-0">
                 <CardHeader>
                   <CardTitle>Orders</CardTitle>
-                  <CardDescription>
-                    View your Orders.
-                  </CardDescription>
+                  <CardDescription>View your Orders.</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <Table>
@@ -295,12 +354,11 @@ export function OrdersDash() {
                               height="64"
                               src="/placeholder.svg"
                               width="64"
-                            />Image
+                            />
+                            Image
                           </TableCell>
                           <TableCell className="font-medium">{order.status}</TableCell>
-                          <TableCell className="hidden md:table-cell">
-                            {order.paymentId}
-                          </TableCell>
+                          <TableCell className="hidden md:table-cell">{order.paymentId}</TableCell>
                           <TableCell className="hidden md:table-cell">
                             {order.date.toString()}
                           </TableCell>

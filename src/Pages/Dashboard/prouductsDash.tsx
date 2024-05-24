@@ -59,8 +59,14 @@ import { useQuery } from "@tanstack/react-query"
 import api from "@/api"
 import { Category, Product } from "@/types"
 import { DeleteDialog } from "@/components/deletDailog"
+import { SearchInput } from "@/components/search"
+import { GlobalContext } from "@/routes/Router"
+import { useContext } from "react"
 
 export function ProductsDash() {
+  const context = useContext(GlobalContext)
+  if (!context) throw Error("Context is Missing")
+  const { handleLogoutUser, state } = context
   const getCategories = async () => {
     try {
       const token = localStorage.getItem("token")
@@ -69,24 +75,29 @@ export function ProductsDash() {
           Authorization: `Bearer ${token}`
         }
       })
-      console.log(res)
       return res.data
     } catch (error) {
       console.error(error)
       return Promise.reject(new Error("Something went wrong"))
     }
   }
-
+  const handleLogout = () => {
+    if (typeof window !== undefined) {
+      window.location.reload()
+    }
+    localStorage.removeItem("token")
+    localStorage.removeItem("user")
+    handleLogoutUser()
+  }
   // Queries
   const { data: categories, error: catError } = useQuery<Category[]>({
     queryKey: ["categories"],
     queryFn: getCategories
   })
 
-  console.log(categories)
   const getProducts = async () => {
     try {
-      const res = await api.get("/products")
+      const res = await api.get(`/products?sort=0&search=${state.search}`)
       return res.data
     } catch (error) {
       console.error(error)
@@ -100,8 +111,6 @@ export function ProductsDash() {
     queryFn: getProducts
   })
   const productWithCat = products?.map((product) => {
-    console.log(categories)
-
     const category = categories?.find((cat) => cat.id === product.categoryId)
     console.log(category)
     if (category) {
@@ -113,7 +122,6 @@ export function ProductsDash() {
     return product
   })
 
-  console.log(productWithCat)
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
       <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
@@ -285,12 +293,7 @@ export function ProductsDash() {
             </BreadcrumbList>
           </Breadcrumb>
           <div className="relative ml-auto flex-1 md:grow-0">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              type="search"
-              placeholder="Search..."
-              className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
-            />
+            <SearchInput />
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -310,7 +313,7 @@ export function ProductsDash() {
               <DropdownMenuItem>Settings</DropdownMenuItem>
               <DropdownMenuItem>Support</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Logout</DropdownMenuItem>
+              <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </header>
@@ -415,7 +418,7 @@ export function ProductsDash() {
                 </CardContent>
                 <CardFooter>
                   <div className="text-xs text-muted-foreground">
-                    Showing <strong>1-10</strong> of <strong>32</strong> products
+                    Showing <strong>1-10</strong> of <strong>20</strong> products
                   </div>
                 </CardFooter>
               </Card>
