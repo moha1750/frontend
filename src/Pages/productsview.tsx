@@ -42,9 +42,7 @@ export function ProductView() {
   })
   return (
     <>
-      <p className="mt-2 mb-10 text-3xl font-bold tracking-tight sm:text-4xl">
-        Checkout Our Products
-      </p>
+      <p className="mt-2 mb-10 text-3xl font-bold tracking-tight sm:text-4xl">Products</p>
       <section className="flex flex-col md:flex-row gap-4 justify-between max-w-6xl mx-auto w-full">
         <Carousel className="w-full">
           <CarouselContent className="w-full gap-2">

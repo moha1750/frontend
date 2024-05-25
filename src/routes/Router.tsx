@@ -1,7 +1,7 @@
 import App from "@/App"
 import { Dashboard } from "@/Pages/Dashboard/dashboard"
 import { Login } from "@/Pages/login/login"
-import { Products } from "@/Pages/Products"
+import { Products } from "@/Pages/products"
 import { ContactUs } from "@/Pages/contactUs"
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import { EditProducts } from "@/Pages/Dashboard/editProducts"
@@ -17,6 +17,7 @@ import { ProductDetails } from "@/Pages/productDetails"
 import { useQueryClient } from "@tanstack/react-query"
 import { PrivateRouter } from "@/components/privateRouter"
 import { AboutUs } from "@/Pages/aboutUs"
+import { CategoryView } from "@/Pages/categoryview"
 
 const router = createBrowserRouter([
   {
@@ -31,6 +32,11 @@ const router = createBrowserRouter([
     path: "/contactus",
     element: <ContactUs />
   },
+  {
+    path: "/categoryView",
+    element: <CategoryView />
+  },
+
   {
     path: "/singUp",
     element: <SingUp />

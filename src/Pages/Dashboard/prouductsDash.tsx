@@ -112,7 +112,6 @@ export function ProductsDash() {
   })
   const productWithCat = products?.map((product) => {
     const category = categories?.find((cat) => cat.id === product.categoryId)
-    console.log(category)
     if (category) {
       return {
         ...product,

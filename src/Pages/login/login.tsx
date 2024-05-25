@@ -19,8 +19,6 @@ export function Login() {
     password: ""
   })
   const handleSignIn = async () => {
-    console.log(user)
-
     try {
       const res = await api.post(`/users/signin`, user)
       return res.data
@@ -107,11 +105,11 @@ export function Login() {
       </div>
       <div className="hidden bg-muted lg:block">
         <img
-          src="https://i.ibb.co/DtV5LGK/Screenshot-2024-05-19-at-23-22-46.png"
+          src="https://i.ibb.co/pRwVtj1/Person-Left.png"
           alt=""
           width="1920"
           height="1080"
-          className="h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+          className="h-full w-full object-cover"
         />
       </div>
     </div>

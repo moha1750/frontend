@@ -87,6 +87,9 @@ export function ProductDetails() {
             </CardHeader>
           </Card>
         </div>
+        <div className="mt-3 flex items-center align-text-top">
+          <p>{product.description}</p>
+        </div>
       </div>
     </>
   )

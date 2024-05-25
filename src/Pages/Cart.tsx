@@ -4,7 +4,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { ShoppingCart } from "lucide-react"
 import { useContext } from "react"
 import { GlobalContext } from "@/routes/Router"
-import { Products } from "./Products"
+import { Products } from "./products"
 
 export function Cart() {
   const context = useContext(GlobalContext)

@@ -16,7 +16,7 @@ export function Home() {
           <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-2">
             <div className="lg:pr-8 lg:pt-4">
               <div className="lg:max-w-lg">
-                <p className="mt-6 text-lg leading-8"> Simplicity is the key to luxury </p>
+                <h2 className="mt-6 text-lg"> Simplicity is the key to luxury </h2>
                 <dl className="mt-10 max-w-xl space-y-8 text-base leading-7 lg:max-w-none">
                   <div className="relative pl-9">
                     <dd className="inline">
