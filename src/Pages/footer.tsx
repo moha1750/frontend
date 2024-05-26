@@ -44,16 +44,16 @@ export function FooterSection() {
             <Link to="/contactus">Contact Us</Link>
           </p>
 
-          <Link to="/cart">T&C</Link>
+          {/* <Link to="/cart">T&C</Link> */}
         </div>
 
         <div>
           <Link to="/Products">View Products</Link>
-          <Link to="/categoryView">View Categories</Link>
+          <Link to="/categories">View Categories</Link>
         </div>
       </footer>
       <div className="copy-right">
-        <p>&copy; 2024 @Malhaja</p>
+        <p>&copy;Malhaja 2024</p>
       </div>
     </>
   )

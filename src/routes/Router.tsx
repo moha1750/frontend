@@ -18,25 +18,16 @@ import { useQueryClient } from "@tanstack/react-query"
 import { PrivateRouter } from "@/components/privateRouter"
 import { AboutUs } from "@/Pages/aboutUs"
 import { CategoryView } from "@/Pages/categoryview"
+import { Categories } from "@/Pages/category"
+import { CategoryDash } from "@/Pages/Dashboard/categoryDash"
+import { EditCategory } from "@/Pages/Dashboard/editCategory"
+// import { CategoryDash } from "@/Pages/Dashboard/categoryDash"
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />
   },
-  {
-    path: "/products/:productId",
-    element: <ProductDetails />
-  },
-  {
-    path: "/contactus",
-    element: <ContactUs />
-  },
-  {
-    path: "/categoryView",
-    element: <CategoryView />
-  },
-
   {
     path: "/singUp",
     element: <SingUp />
@@ -46,9 +37,34 @@ const router = createBrowserRouter([
     element: <Login />
   },
   {
-    path: "/Pages/login/forgotpass",
+    path: "/Pages/login/forgotPass",
     element: <ForgotPassword />
   },
+  {
+    path: "/aboutUs",
+    element: <AboutUs />
+  },
+  {
+    path: "/contactUs",
+    element: <ContactUs />
+  },
+  {
+    path: "/categories",
+    element: <Categories />
+  },
+  {
+    path: "/categoryView",
+    element: <CategoryView />
+  },
+  {
+    path: "/products",
+    element: <Products />
+  },
+  {
+    path: "/products/:productId",
+    element: <ProductDetails />
+  },
+
   {
     path: "/dashboard",
     element: (
@@ -58,15 +74,23 @@ const router = createBrowserRouter([
     )
   },
   {
-    path: "/products",
-    element: <Products />
+    path: "/dashboard/users",
+    element: (
+      <PrivateRouter>
+        <UsersDash />
+      </PrivateRouter>
+    )
   },
   {
-    path: "/aboutUs",
-    element: <AboutUs />
+    path: "/dashboard/categoriesDash",
+    element: (
+      <PrivateRouter>
+        <CategoryDash />
+      </PrivateRouter>
+    )
   },
   {
-    path: "/dashboard/ordersdash",
+    path: "/dashboard/ordersDash",
     element: (
       <PrivateRouter>
         <OrdersDash />
@@ -74,23 +98,7 @@ const router = createBrowserRouter([
     )
   },
   {
-    path: "/dashboard/productsdash",
-    element: (
-      <PrivateRouter>
-        <ProductsDash />
-      </PrivateRouter>
-    )
-  },
-  {
-    path: "/dashboard/editProducts",
-    element: (
-      <PrivateRouter>
-        <EditProducts />
-      </PrivateRouter>
-    )
-  },
-  {
-    path: "/ProductsDashboard",
+    path: "/dashboard/productsDash",
     element: (
       <PrivateRouter>
         <ProductsDash />
@@ -106,10 +114,18 @@ const router = createBrowserRouter([
     )
   },
   {
-    path: "/dashboard/users",
+    path: "/dashboard/editCategory",
     element: (
       <PrivateRouter>
-        <UsersDash />
+        <EditCategory />
+      </PrivateRouter>
+    )
+  },
+  {
+    path: "/dashboard/editProducts",
+    element: (
+      <PrivateRouter>
+        <EditProducts />
       </PrivateRouter>
     )
   }

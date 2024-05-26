@@ -42,14 +42,16 @@ export function ProductView() {
   })
   return (
     <>
-      <p className="mt-2 mb-10 text-3xl font-bold tracking-tight sm:text-4xl">Products</p>
-      <section className="flex flex-col md:flex-row gap-4 justify-between max-w-6xl mx-auto w-full">
-        <Carousel className="w-full">
-          <CarouselContent className="w-full gap-2">
+      <p className="mt-2 mb-10 text-3xl font-bold tracking-tight sm:text-4xl">
+        <Link to="/Products">Products</Link>
+      </p>
+      <section className="flex flex-col md:flex-row gap-4 justify-between max-w-6xl mx-auto w-full ">
+        <Carousel className="w-full ">
+          <CarouselContent className="w-full gap-2 ">
             {data?.map((product) => (
-              <CarouselItem className=" basis-1/4" key={product.id}>
+              <CarouselItem className=" basis-1/4 !h-full" key={product.id}>
                 <div className="p-1">
-                  <Card key={product.id} className="w-[300px] h-[400px]">
+                  <Card key={product.id} className="w-[300px]  !h-full">
                     <CardHeader>
                       <CardTitle>{product.name}</CardTitle>
                       <CardDescription>{product.description}</CardDescription>

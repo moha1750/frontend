@@ -1,20 +1,7 @@
-import {
-  File,
-  Home,
-  LayoutDashboardIcon,
-  LineChart,
-  ListFilter,
-  MoreHorizontal,
-  Package,
-  Package2,
-  PanelLeft,
-  PlusCircle,
-  Search,
-  Settings,
-  ShoppingCart,
-  Users2
-} from "lucide-react"
-import { Badge } from "@/components/ui/badge"
+import api from "@/api"
+import { DeleteDialog } from "@/components/deletDailog"
+import { EditDialog } from "@/components/editDailog"
+import { SearchInput } from "@/components/search"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -32,16 +19,6 @@ import {
   CardHeader,
   CardTitle
 } from "@/components/ui/card"
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import {
   Table,
@@ -52,26 +29,40 @@ import {
   TableRow
 } from "@/components/ui/table"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
-import { Link } from "react-router-dom"
-import { TooltipProvider } from "@radix-ui/react-tooltip"
-import { EditDialog } from "@/components/editDailog"
-import { useQuery } from "@tanstack/react-query"
-import api from "@/api"
-import { Category, Product } from "@/types"
-import { DeleteDialog } from "@/components/deletDailog"
-import { SearchInput } from "@/components/search"
 import { GlobalContext } from "@/routes/Router"
-import { useContext } from "react"
+import { Category } from "@/types"
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from "@radix-ui/react-select"
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from "@radix-ui/react-dropdown-menu"
 
-export function ProductsDash() {
+import {} from "@radix-ui/react-tabs"
+import { useQuery } from "@tanstack/react-query"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+
+import {
+  Home,
+  LayoutDashboardIcon,
+  LineChart,
+  ListFilter,
+  MoreHorizontal,
+  Package,
+  Package2,
+  PanelLeft,
+  PlusCircle,
+  ShoppingCart,
+  File,
+  Users2
+} from "lucide-react"
+import { useContext } from "react"
+import { Link } from "react-router-dom"
+
+export function CategoryDash() {
   const context = useContext(GlobalContext)
   if (!context) throw Error("Context is Missing")
   const { handleLogoutUser, state } = context
@@ -103,32 +94,6 @@ export function ProductsDash() {
     queryFn: getCategories
   })
 
-  const getProducts = async () => {
-    try {
-      const res = await api.get(`/products?sort=0&search=${state.search}`)
-      return res.data
-    } catch (error) {
-      console.error(error)
-      return Promise.reject(new Error("Something went wrong"))
-    }
-  }
-
-  // Queries
-  const { data: products, error } = useQuery<Product[]>({
-    queryKey: ["products"],
-    queryFn: getProducts
-  })
-  const productWithCat = products?.map((product) => {
-    const category = categories?.find((cat) => cat.id === product.categoryId)
-    if (category) {
-      return {
-        ...product,
-        categoryName: category.name
-      }
-    }
-    return product
-  })
-
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
       <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
@@ -154,18 +119,18 @@ export function ProductsDash() {
               <TooltipContent side="right">Dashboard</TooltipContent>
             </Tooltip>
           </TooltipProvider>
+
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  to="/dashboard/categoriesDash"
-                  className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+                  to="/dashboard/ordersDash"
+                  className="text-muted-foreground hover:text-foreground"
                 >
-                  <Package2 className="h-5 w-5 transition-all group-hover:scale-110" />
-                  <span className="sr-only">Categories</span>
+                  <ShoppingCart className="h-5 w-5" />
                 </Link>
               </TooltipTrigger>
-              <TooltipContent side="right">Categories</TooltipContent>
+              <TooltipContent side="right">Orders</TooltipContent>
             </Tooltip>
           </TooltipProvider>
 
@@ -173,14 +138,14 @@ export function ProductsDash() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  to="/dashboard/ordersDash"
+                  to="/dashboard/productsDash"
                   className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                 >
-                  <ShoppingCart className="h-5 w-5" />
-                  <span className="sr-only">Orders</span>
+                  <Package className="h-5 w-5" />
+                  <span className="sr-only">Products</span>
                 </Link>
               </TooltipTrigger>
-              <TooltipContent side="right">Orders</TooltipContent>
+              <TooltipContent side="right">Products</TooltipContent>
             </Tooltip>
           </TooltipProvider>
 
@@ -242,13 +207,13 @@ export function ProductsDash() {
             </SheetTrigger>
             <SheetContent side="left" className="sm:max-w-xs">
               <nav className="grid gap-6 text-lg font-medium">
-                <Link
-                  to="/dashboard/categoriesDash"
+                {/* <Link
+                  href="#"
                   className="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
                 >
                   <Package2 className="h-5 w-5 transition-all group-hover:scale-110" />
-                  <span className="sr-only">/Categories</span>
-                </Link>
+                  <span className="sr-only">Acme Inc</span>
+                </Link> */}
                 <Link
                   to="/dashboard"
                   className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
@@ -293,13 +258,7 @@ export function ProductsDash() {
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link to="#">Products</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage>All Products</BreadcrumbPage>
+                <BreadcrumbPage>All Categories</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
@@ -334,9 +293,9 @@ export function ProductsDash() {
               <TabsList>
                 <TabsTrigger value="all">All</TabsTrigger>
                 <TabsTrigger value="active">Active</TabsTrigger>
-                <TabsTrigger value="draft">Draft</TabsTrigger>
+                <TabsTrigger value="draft">Archived</TabsTrigger>
                 <TabsTrigger value="archived" className="hidden sm:flex">
-                  Archived
+                  Draft
                 </TabsTrigger>
               </TabsList>
               <div className="ml-auto flex items-center gap-2">
@@ -348,21 +307,23 @@ export function ProductsDash() {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>Filter by</DropdownMenuLabel>
+                    <DropdownMenuLabel>Filter by Activeness</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuCheckboxItem checked>Active</DropdownMenuCheckboxItem>
+                    <DropdownMenuCheckboxItem>Archive</DropdownMenuCheckboxItem>
                     <DropdownMenuCheckboxItem>Draft</DropdownMenuCheckboxItem>
-                    <DropdownMenuCheckboxItem>Archived</DropdownMenuCheckboxItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
                 <Button size="sm" variant="outline" className="h-8 gap-1">
                   <File className="h-3.5 w-3.5" />
                   <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Export</span>
                 </Button>
-                <Link to="/dashboard/editProducts">
+                <Link to="/dashboard/editCategory">
                   <Button size="sm" className="h-8 gap-1">
                     <PlusCircle className="h-3.5 w-3.5" />
-                    <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Add Product</span>
+                    <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                      Add Category
+                    </span>
                   </Button>
                 </Link>
               </div>
@@ -370,39 +331,29 @@ export function ProductsDash() {
             <TabsContent value="all">
               <Card x-chunk="dashboard-06-chunk-0">
                 <CardHeader>
-                  <CardTitle>Products</CardTitle>
-                  <CardDescription>
-                    Manage your products and view their sales performance.
-                  </CardDescription>
+                  <CardTitle>Categories</CardTitle>
+                  <CardDescription>Manage your Categories.</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead className="hidden w-[100px] sm:table-cell">Image</TableHead>
-                        <TableHead className="hidden sm:table-cell  text-center">product</TableHead>
-                        <TableHead className="hidden sm:table-cell  text-center">
-                          Category
-                        </TableHead>
-                        <TableHead className="hidden sm:table-cell  text-center">Actions</TableHead>
-                        <TableHead className="hidden sm:table-cell  text-center">Status</TableHead>
+                        <TableHead className="sm:table-cell  text-center">ID</TableHead>
+                        <TableHead className="sm:table-cell  text-center">CategoryImage</TableHead>
+                        <TableHead className="sm:table-cell  text-center">CategoryName</TableHead>
+                        <TableHead className="sm:table-cell  text-center">Description</TableHead>
+                        <TableHead className="sm:table-cell  text-center">Action</TableHead>
                       </TableRow>
                     </TableHeader>
+
                     <TableBody>
-                      {productWithCat?.map((product) => (
-                        <TableRow key={product.image}>
-                          <TableCell className="hidden md:table-cell">
-                            <img
-                              alt="Product image"
-                              className="aspect-square rounded-md object-cover"
-                              height="64"
-                              src={product.image}
-                              width="64"
-                            />
-                          </TableCell>
-                          <TableCell className="font-medium">{product.name}</TableCell>
-                          <TableCell className="hidden md:table-cell">
-                            {product.categoryName}
+                      {categories?.map((category) => (
+                        <TableRow key={category.id}>
+                          <TableCell className="sm:table-cell">{category.id}</TableCell>
+                          <TableCell className="md:table-cell">{category.image}</TableCell>
+                          <TableCell className="md:table-cell">{category.name}</TableCell>
+                          <TableCell className="md:table-cell">
+                            {category.status === "Active"}
                           </TableCell>
                           <TableCell>
                             <DropdownMenu>
@@ -415,53 +366,11 @@ export function ProductsDash() {
                               <DropdownMenuContent align="end">
                                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
                                 <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                                  <EditDialog product={product} />
+                                  {/* <EditDialog User={user} /> */}
                                 </DropdownMenuItem>
                                 <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                                  <DeleteDialog product={product} />
+                                  {/* <DeleteDialog user={user}/> */}
                                 </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </TableCell>
-                          <TableCell>
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button aria-haspopup="true" size="icon" variant="ghost">
-                                  <MoreHorizontal className="h-4 w-4" />
-                                  <span className="sr-only">Toggle menu</span>
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuLabel>Change Status</DropdownMenuLabel>
-
-                                <DropdownMenuItem
-                                  // value="Draft"
-                                  onSelect={(e) => e.preventDefault()}
-                                >
-                                  Draft
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                  // value="Archived"
-                                  onSelect={(e) => e.preventDefault()}
-                                >
-                                  Archived
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                  // value="Active"
-                                  onSelect={(e) => e.preventDefault()}
-                                >
-                                  Active
-                                </DropdownMenuItem>
-                                <Select>
-                                  <SelectTrigger id="status" aria-label="Select status">
-                                    <SelectValue placeholder="Select status" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="Draft">Draft</SelectItem>
-                                    <SelectItem value="Active">Active</SelectItem>
-                                    <SelectItem value="Archived">Archived</SelectItem>
-                                  </SelectContent>
-                                </Select>
                               </DropdownMenuContent>
                             </DropdownMenu>
                           </TableCell>
@@ -470,11 +379,6 @@ export function ProductsDash() {
                     </TableBody>
                   </Table>
                 </CardContent>
-                <CardFooter>
-                  <div className="text-xs text-muted-foreground">
-                    Showing <strong>1-10</strong> of <strong>20</strong> products
-                  </div>
-                </CardFooter>
               </Card>
             </TabsContent>
           </Tabs>

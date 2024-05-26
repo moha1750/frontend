@@ -1,21 +1,14 @@
 import api from "@/api"
 import { NavBar } from "@/components/navBar"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle
-} from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel"
 import { GlobalContext } from "@/routes/Router"
 import { Category, Product } from "@/types"
 import { useQuery } from "@tanstack/react-query"
+import { Link } from "lucide-react"
 import { useContext } from "react"
-import { Link } from "react-router-dom"
 
-export function CategoryView() {
+export function Categories() {
   const context = useContext(GlobalContext)
   if (!context) throw Error("Context is Missing")
   const { state } = context
@@ -67,29 +60,26 @@ export function CategoryView() {
   })
   return (
     <>
-      <p className="mt-2 mb-10 text-3xl font-bold tracking-tight sm:text-4xl">
-        <Link to="/categories">Categories</Link>
-      </p>
+      <NavBar />
+      <p className="mt-2 mb-10 text-3xl font-bold tracking-tight sm:text-4xl"></p>
       <section className="flex flex-col md:flex-row gap-4 justify-between max-w-6xl mx-auto w-full">
         <Carousel className="w-full">
           <CarouselContent className="w-full gap-2">
-            {categories?.map((category) => {
-              return (
-                <CarouselItem className=" basis-1/4" key={category.name}>
-                  <div className="p-1">
-                    <Card key={category.id} className="w-[300px] h-[600px]">
-                      <CardHeader>
-                        <CardTitle>{category.description}</CardTitle>
-                        <CardDescription>{category.description}</CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <img src={category.image} alt="" />
-                      </CardContent>
-                    </Card>
-                  </div>
-                </CarouselItem>
-              )
-            })}
+            {categories?.map((category) => (
+              <CarouselItem className=" basis-1/4" key={category.name}>
+                <div className="p-1">
+                  <Card key={category.id} className="w-[300px] h-[400px]">
+                    <CardHeader>
+                      <CardTitle>{category.description}</CardTitle>
+                      <CardDescription>{category.description}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <img src={category.image} alt="" />
+                    </CardContent>
+                  </Card>
+                </div>
+              </CarouselItem>
+            ))}
           </CarouselContent>
         </Carousel>
       </section>

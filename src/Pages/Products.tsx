@@ -11,10 +11,9 @@ import {
 } from "@/components/ui/card"
 import { GlobalContext } from "@/routes/Router"
 import { Product } from "@/types"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { ChangeEvent, useContext, useState } from "react"
+import { useQuery } from "@tanstack/react-query"
+import { useContext } from "react"
 import { Link } from "react-router-dom"
-import { Cart } from "./Cart"
 
 export function Products() {
   const context = useContext(GlobalContext)

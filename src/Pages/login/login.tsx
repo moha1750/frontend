@@ -73,7 +73,7 @@ export function Login() {
                 <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
                   <Link
-                    to="/Pages/login/forgotpass"
+                    to="/Pages/login/forgotPass"
                     className="ml-auto inline-block text-sm underline"
                   >
                     Forgot your password?

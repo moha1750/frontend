@@ -54,6 +54,11 @@ export function NavBar() {
               </NavigationMenuItem>
             )}
             <NavigationMenuItem>
+              <Link to="/categories">
+                <NavigationMenuLink>Categories</NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
               <Link to="/Products">
                 <NavigationMenuLink>Products</NavigationMenuLink>
               </Link>

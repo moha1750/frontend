@@ -11,6 +11,8 @@ export type Category = {
   id: string
   name: string
   description: string
+  status: string
+  image: string
 }
 export type Product = {
   id: string
@@ -19,6 +21,7 @@ export type Product = {
   description: string
   categoryId: string
   status: string
+  categoryName: string
 }
 export type Order = {
   id: string

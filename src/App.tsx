@@ -12,8 +12,8 @@ function App() {
     <>
       <NavBar />
       <Home />
-      <ProductView />
       <CategoryView />
+      <ProductView />
       <FooterSection />
     </>
   )
