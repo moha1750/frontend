@@ -1,4 +1,5 @@
 import {
+  Archive,
   File,
   Home,
   LayoutDashboardIcon,
@@ -55,14 +56,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { Link } from "react-router-dom"
 import { TooltipProvider } from "@radix-ui/react-tooltip"
-import { EditDialog } from "@/components/editDailog"
 import { useQuery } from "@tanstack/react-query"
 import api from "@/api"
 import { User } from "@/types"
-import { DeleteDialog } from "@/components/deletDailog"
 import { useContext } from "react"
 import { GlobalContext } from "@/routes/Router"
 import { SearchInput } from "@/components/search"
+import { EditUser } from "@/components/editUser"
+import { DeleteUsers } from "@/components/deletUser"
 
 export function UsersDash() {
   const context = useContext(GlobalContext)
@@ -138,21 +139,7 @@ export function UsersDash() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  to="/dashboard/ordersdash"
-                  className="text-muted-foreground hover:text-foreground"
-                >
-                  <ShoppingCart className="h-5 w-5" />
-                </Link>
-              </TooltipTrigger>
-              <TooltipContent side="right">Orders</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Link
-                  to="/dashboard/productsdash"
+                  to="/dashboard/productsDash"
                   className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                 >
                   <Package className="h-5 w-5" />
@@ -167,14 +154,28 @@ export function UsersDash() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  to="#"
+                  to="/dashboard/stockDash"
                   className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                 >
-                  <Users2 className="h-5 w-5" />
-                  <span className="sr-only">Customers</span>
+                  <Archive className="h-5 w-5 transition-all group-hover:scale-110" />
+                  <span className="sr-only">Stocks</span>
                 </Link>
               </TooltipTrigger>
-              <TooltipContent side="right">Customers</TooltipContent>
+              <TooltipContent side="right">Stocks</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link
+                  to="/dashboard/ordersDash"
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  <ShoppingCart className="h-5 w-5" />
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="right">Orders</TooltipContent>
             </Tooltip>
           </TooltipProvider>
 
@@ -372,10 +373,10 @@ export function UsersDash() {
                               <DropdownMenuContent align="end">
                                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
                                 <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                                  {/* <EditDialog User={user} /> */}
+                                  <EditUser user={user} />
                                 </DropdownMenuItem>
                                 <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                                  {/* <DeleteDialog user={user}/> */}
+                                  <DeleteUsers user={user} />
                                 </DropdownMenuItem>
                               </DropdownMenuContent>
                             </DropdownMenu>

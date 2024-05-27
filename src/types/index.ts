@@ -22,6 +22,11 @@ export type Product = {
   categoryId: string
   status: string
   categoryName: string
+  price: number
+  quantity: number
+  size: string
+  color: string
+  stockId: string
 }
 export type Order = {
   id: string

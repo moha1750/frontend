@@ -51,11 +51,12 @@ export function Products() {
               </CardContent>
               <CardFooter className="flex justify-between">
                 <Button
+                  disabled={!product.stockId}
                   onClick={() => {
                     handleAddToCart(product)
                   }}
                 >
-                  Add to cart
+                  {product.stockId ? "Add to cart" : "Out of stock"}
                 </Button>
                 <Button variant="outline">
                   <Link to={`/products/${product.id}`}>Details</Link>

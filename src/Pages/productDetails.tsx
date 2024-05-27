@@ -6,7 +6,7 @@ import { GlobalContext } from "@/routes/Router"
 import { Product } from "@/types"
 import { useQuery } from "@tanstack/react-query"
 import { useContext } from "react"
-import { useParams } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 
 export function ProductDetails() {
   const params = useParams()
@@ -53,7 +53,7 @@ export function ProductDetails() {
         </Card>
 
         <div className="w-full grid grid-cols-2">
-          <Card className="w-full">
+          <Card className="w-full hover:">
             <CardHeader>
               {Object.keys(groups).length > 0 ? (
                 Object.keys(groups).map((key) => {
@@ -83,11 +83,13 @@ export function ProductDetails() {
               >
                 Add to cart
               </Button>
-              <Button>Checkout</Button>
+              <Link to="/checkout">
+                <Button className="w-full">Checkout</Button>
+              </Link>
             </CardHeader>
           </Card>
         </div>
-        <div className="mt-3 flex flex-col items-center align-text-top py-8 ">
+        <div className="mt-6 flex flex-col items-center align-text-top py-8 border-t border-b">
           <p>About Product </p>
           <p>{product.description}</p>
         </div>

@@ -42,7 +42,7 @@ export function ProductView() {
   })
   return (
     <>
-      <p className="mt-2 mb-10 text-3xl font-bold tracking-tight sm:text-4xl">
+      <p className="mt-2 mb-10 text-3xl font-bold tracking-tight sm:text-4xl py-4">
         <Link to="/Products">Products</Link>
       </p>
       <section className="flex flex-col md:flex-row gap-4 justify-between max-w-6xl mx-auto w-full ">
@@ -61,11 +61,12 @@ export function ProductView() {
                     </CardContent>
                     <CardFooter className="flex justify-between">
                       <Button
+                        disabled={!product.stockId}
                         onClick={() => {
                           handleAddToCart(product)
                         }}
                       >
-                        Add to cart
+                        {product.stockId ? "Add to cart" : "Out of stock"}
                       </Button>
                       <Button variant="outline">
                         <Link to={`/products/${product.id}`}>Details</Link>
@@ -79,7 +80,7 @@ export function ProductView() {
           <CarouselPrevious />
           <CarouselNext />
         </Carousel>
-      </section>{" "}
+      </section>
     </>
   )
 }

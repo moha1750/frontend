@@ -18,6 +18,7 @@ import { Label } from "@/components/ui/label"
 
 import { useQuery } from "@tanstack/react-query"
 import {
+  Archive,
   Home,
   LayoutDashboardIcon,
   LineChart,
@@ -50,7 +51,7 @@ import {
 export function EditCategory() {
   const [category, setCategory] = useState({
     name: "",
-    image: "https://i.ibb.co/pRwVtj1/Person-Left.png",
+    image: "",
     description: "",
     Id: "",
     status: "Active"
@@ -110,7 +111,6 @@ export function EditCategory() {
     e.preventDefault()
     await handleAddCategory()
   }
-  console.log("/////////////////////////////////////////")
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
       <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
@@ -141,14 +141,14 @@ export function EditCategory() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  to="/dashboard/ordersDash"
-                  className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-accent-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+                  to="/dashboard/users"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                 >
-                  <ShoppingCart className="h-5 w-5" />
-                  <span className="sr-only">Orders</span>
+                  <Users2 className="h-5 w-5" />
+                  <span className="sr-only">Customers</span>
                 </Link>
               </TooltipTrigger>
-              <TooltipContent side="right">Orders</TooltipContent>
+              <TooltipContent side="right">Customers</TooltipContent>
             </Tooltip>
           </TooltipProvider>
 
@@ -166,19 +166,32 @@ export function EditCategory() {
               <TooltipContent side="right">Products</TooltipContent>
             </Tooltip>
           </TooltipProvider>
-
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  to="/dashboard/users"
+                  to="/dashboard/stockDash"
                   className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                 >
-                  <Users2 className="h-5 w-5" />
-                  <span className="sr-only">Customers</span>
+                  <Archive className="h-5 w-5 transition-all group-hover:scale-110" />
+                  <span className="sr-only">Stocks</span>
                 </Link>
               </TooltipTrigger>
-              <TooltipContent side="right">Customers</TooltipContent>
+              <TooltipContent side="right">Stocks</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link
+                  to="/dashboard/ordersDash"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-accent-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+                >
+                  <ShoppingCart className="h-5 w-5" />
+                  <span className="sr-only">Orders</span>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="right">Orders</TooltipContent>
             </Tooltip>
           </TooltipProvider>
 

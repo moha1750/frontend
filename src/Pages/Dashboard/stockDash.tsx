@@ -1,5 +1,4 @@
 import {
-  Archive,
   File,
   Home,
   LayoutDashboardIcon,
@@ -60,18 +59,25 @@ import { EditDialog } from "@/components/editDailog"
 import { DeleteDialog } from "@/components/deletDailog"
 import { useQuery } from "@tanstack/react-query"
 import api from "@/api"
-import { Order } from "@/types"
+import { Order, Stock } from "@/types"
 import { GlobalContext } from "@/routes/Router"
 import { useContext } from "react"
+import { EditCat } from "@/components/editCat"
+import { DeleteCat } from "@/components/deletCat"
 
-export function OrdersDash() {
+export function StockDash() {
   const context = useContext(GlobalContext)
   if (!context) throw Error("")
   const { handleLogoutUser } = context
 
-  const getOrders = async () => {
+  const getStocks = async () => {
     try {
-      const res = await api.get("/orders")
+      const token = localStorage.getItem("token")
+      const res = await api.get("/stocks", {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
       return res.data
     } catch (error) {
       console.error(error)
@@ -88,9 +94,9 @@ export function OrdersDash() {
     handleLogoutUser()
   }
   // Queries
-  const { data: orders, error } = useQuery<Order[]>({
-    queryKey: ["orders"],
-    queryFn: getOrders
+  const { data: stocks, error } = useQuery<Stock[]>({
+    queryKey: ["stocks"],
+    queryFn: getStocks
   })
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
@@ -117,15 +123,6 @@ export function OrdersDash() {
               <TooltipContent side="right">Dashboard</TooltipContent>
             </Tooltip>
           </TooltipProvider>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild></TooltipTrigger>
-              <TooltipContent side="right">
-                <ShoppingCart className="h-5 w-5" />
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -156,6 +153,15 @@ export function OrdersDash() {
           </TooltipProvider>
           <TooltipProvider>
             <Tooltip>
+              <TooltipTrigger asChild></TooltipTrigger>
+              <TooltipContent side="right">
+                <ShoppingCart className="h-5 w-5" />
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
+          <TooltipProvider>
+            <Tooltip>
               <TooltipTrigger asChild>
                 <Link
                   to="/dashboard/productsDash"
@@ -173,14 +179,13 @@ export function OrdersDash() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  to="/dashboard/stockDash"
-                  className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+                  to="/dashboard/ordersDash"
+                  className="text-muted-foreground hover:text-foreground"
                 >
-                  <Archive className="h-5 w-5 transition-all group-hover:scale-110" />
-                  <span className="sr-only">Stocks</span>
+                  <ShoppingCart className="h-5 w-5" />
                 </Link>
               </TooltipTrigger>
-              <TooltipContent side="right">Stocks</TooltipContent>
+              <TooltipContent side="right">Orders</TooltipContent>
             </Tooltip>
           </TooltipProvider>
           <TooltipProvider>
@@ -203,12 +208,12 @@ export function OrdersDash() {
             <Tooltip>
               <TooltipTrigger asChild>
                 {/* <Link
-                href="#"
-                className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
-                >
-                <Settings className="h-5 w-5" />
-                <span className="sr-only">Settings</span>
-            </Link> */}
+                  href="#"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+                  >
+                  <Settings className="h-5 w-5" />
+                  <span className="sr-only">Settings</span>
+              </Link> */}
               </TooltipTrigger>
               <TooltipContent side="right">Settings</TooltipContent>
             </Tooltip>
@@ -227,12 +232,12 @@ export function OrdersDash() {
             <SheetContent side="left" className="sm:max-w-xs">
               <nav className="grid gap-6 text-lg font-medium">
                 {/* <Link
-                  href="#"
-                  className="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
-                >
-                  <Package2 className="h-5 w-5 transition-all group-hover:scale-110" />
-                  <span className="sr-only">Acme Inc</span>
-                </Link> */}
+                    href="#"
+                    className="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
+                  >
+                    <Package2 className="h-5 w-5 transition-all group-hover:scale-110" />
+                    <span className="sr-only">Acme Inc</span>
+                  </Link> */}
                 <Link
                   to="/dashboard"
                   className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
@@ -241,30 +246,34 @@ export function OrdersDash() {
                   Dashboard
                 </Link>
                 <Link
-                  to="#"
-                  className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                >
-                  <ShoppingCart className="h-5 w-5" />
-                  Orders
-                </Link>
-                <Link to="/products" className="flex items-center gap-4 px-2.5 text-foreground">
-                  <Package className="h-5 w-5" />
-                  Products
-                </Link>
-                <Link
                   to="/users"
                   className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
                 >
                   <Users2 className="h-5 w-5" />
                   Customers
                 </Link>
-                {/* <Link
-                  href="#"
+                <Link to="/categories" className="flex items-center gap-4 px-2.5 text-foreground">
+                  <Package className="h-5 w-5" />
+                  Products
+                </Link>
+                <Link to="/products" className="flex items-center gap-4 px-2.5 text-foreground">
+                  <Package className="h-5 w-5" />
+                  Products
+                </Link>
+                <Link
+                  to="/orders"
                   className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
                 >
-                  <LineChart className="h-5 w-5" />
-                  Settings
-                </Link> */}
+                  <ShoppingCart className="h-5 w-5" />
+                  Orders
+                </Link>
+                {/* <Link
+                    href="#"
+                    className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+                  >
+                    <LineChart className="h-5 w-5" />
+                    Settings
+                  </Link> */}
               </nav>
             </SheetContent>
           </Sheet>
@@ -278,12 +287,12 @@ export function OrdersDash() {
               <BreadcrumbSeparator />
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link to="#">Orders</Link>
+                  <Link to="#">Stocks</Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbPage>All Orders</BreadcrumbPage>
+                <BreadcrumbPage>All Stocks</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
@@ -348,13 +357,19 @@ export function OrdersDash() {
                   <File className="h-3.5 w-3.5" />
                   <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Export</span>
                 </Button>
+                <Link to="/dashboard/editStock">
+                  <Button size="sm" className="h-8 gap-1">
+                    <PlusCircle className="h-3.5 w-3.5" />
+                    <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Add Stock</span>
+                  </Button>
+                </Link>
               </div>
             </div>
             <TabsContent value="all">
               <Card x-chunk="dashboard-06-chunk-0">
                 <CardHeader>
-                  <CardTitle>Orders</CardTitle>
-                  <CardDescription>View your Orders.</CardDescription>
+                  <CardTitle>Stocks</CardTitle>
+                  <CardDescription>View your Stocks.</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <Table>
@@ -362,33 +377,33 @@ export function OrdersDash() {
                       <TableHeader>
                         <TableRow>
                           <TableHead className="hidden w-[100px] sm:table-cell">
-                            <span className="sr-only">Image</span>
+                            <span className="sr-only">Stock</span>
                           </TableHead>
-                          <TableHead>product</TableHead>
-                          <TableHead className="hidden md:table-cell">Category</TableHead>
-                          <TableHead>
-                            <span className="sr-only">Actions</span>Actions
+                          <TableHead>Name</TableHead>
+                          <TableHead className="hidden md:table-cell text-center">Price</TableHead>
+                          <TableHead className="hidden md:table-cell text-center">Size</TableHead>
+                          <TableHead className="hidden md:table-cell text-center">Color</TableHead>
+                          <TableHead className="hidden md:table-cell text-center">
+                            Quantity
                           </TableHead>
                         </TableRow>
                       </TableHeader>
                     </TableBody>
                     <TableBody>
-                      {orders?.map((order) => (
-                        <TableRow key={order.userId}>
-                          <TableCell className="hidden sm:table-cell">
-                            <img
-                              alt="Product image"
-                              className="aspect-square rounded-md object-cover"
-                              height="64"
-                              src="/placeholder.svg"
-                              width="64"
-                            />
-                            Image
+                      {stocks?.map((stock) => (
+                        <TableRow key={stock.id}>
+                          <TableCell className="font-medium">{stock.productId}</TableCell>
+                          <TableCell className="hidden md:table-cell text-center">
+                            {stock.price}
                           </TableCell>
-                          <TableCell className="font-medium">{order.status}</TableCell>
-                          <TableCell className="hidden md:table-cell">{order.paymentId}</TableCell>
-                          <TableCell className="hidden md:table-cell">
-                            {order.date.toString()}
+                          <TableCell className="hidden sm:table-cell text-center">
+                            {stock.size}
+                          </TableCell>
+                          <TableCell className="hidden md:table-cell text-center">
+                            {stock.color}
+                          </TableCell>
+                          <TableCell className="hidden md:table-cell text-center">
+                            {stock.quantity}
                           </TableCell>
                           <TableCell>
                             <DropdownMenu>
@@ -400,12 +415,12 @@ export function OrdersDash() {
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="end">
                                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                                  {/* <EditDialog order={order} />
-                                </DropdownMenuItem>
-                                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                                <DeleteDialog order={order}/> */}
-                                </DropdownMenuItem>
+                                {/* <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                                  <EditCat stock={stock} />
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                                  <DeleteCat stock={stock}/>
+                                </DropdownMenuItem> */}
                               </DropdownMenuContent>
                             </DropdownMenu>
                           </TableCell>

@@ -41,10 +41,9 @@ export function AboutUs() {
             <p className="pt-8 text-sm">Simplicity is the key to luxury.</p>
 
             <div className="pt-12 pb-8">
-              <Button className=" font-bold py-2 px-4 rounded-full">
-                Get In Touch
-                <Link to="/contactus"></Link>
-              </Button>
+              <Link to="/contactus">
+                <Button className=" font-bold py-2 px-4 rounded-full">Get In Touch</Button>
+              </Link>
             </div>
 
             <div className="mt-6 pb-16 lg:pb-0 w-4/5 lg:w-full mx-auto flex flex-wrap items-center justify-between">

@@ -45,6 +45,9 @@ export function NavBar() {
               <Link to="/">
                 <NavigationMenuLink>Home</NavigationMenuLink>
               </Link>
+              <Link to="/profile">
+                <NavigationMenuLink>Profile</NavigationMenuLink>
+              </Link>
             </NavigationMenuItem>
             {state.user?.role === "Admin" && (
               <NavigationMenuItem>

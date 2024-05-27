@@ -1,6 +1,5 @@
 import api from "@/api"
-import { DeleteDialog } from "@/components/deletDailog"
-import { EditDialog } from "@/components/editDailog"
+
 import { SearchInput } from "@/components/search"
 import {
   Breadcrumb,
@@ -57,15 +56,19 @@ import {
   PlusCircle,
   ShoppingCart,
   File,
-  Users2
+  Users2,
+  Archive
 } from "lucide-react"
 import { useContext } from "react"
 import { Link } from "react-router-dom"
+import { EditCat } from "@/components/editCat"
+import { DeleteCat } from "@/components/deletCat"
 
 export function CategoryDash() {
   const context = useContext(GlobalContext)
   if (!context) throw Error("Context is Missing")
   const { handleLogoutUser, state } = context
+
   const getCategories = async () => {
     try {
       const token = localStorage.getItem("token")
@@ -124,13 +127,14 @@ export function CategoryDash() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  to="/dashboard/ordersDash"
-                  className="text-muted-foreground hover:text-foreground"
+                  to="/dashboard/users"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                 >
-                  <ShoppingCart className="h-5 w-5" />
+                  <Users2 className="h-5 w-5" />
+                  <span className="sr-only">Customers</span>
                 </Link>
               </TooltipTrigger>
-              <TooltipContent side="right">Orders</TooltipContent>
+              <TooltipContent side="right">Customers</TooltipContent>
             </Tooltip>
           </TooltipProvider>
 
@@ -148,19 +152,31 @@ export function CategoryDash() {
               <TooltipContent side="right">Products</TooltipContent>
             </Tooltip>
           </TooltipProvider>
-
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  to="/dashboard/users"
+                  to="/dashboard/stockDash"
                   className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                 >
-                  <Users2 className="h-5 w-5" />
-                  <span className="sr-only">Customers</span>
+                  <Archive className="h-5 w-5 transition-all group-hover:scale-110" />
+                  <span className="sr-only">Stocks</span>
                 </Link>
               </TooltipTrigger>
-              <TooltipContent side="right">Customers</TooltipContent>
+              <TooltipContent side="right">Stocks</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link
+                  to="/dashboard/ordersDash"
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  <ShoppingCart className="h-5 w-5" />
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="right">Orders</TooltipContent>
             </Tooltip>
           </TooltipProvider>
 
@@ -338,10 +354,8 @@ export function CategoryDash() {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead className="sm:table-cell  text-center">ID</TableHead>
-                        <TableHead className="sm:table-cell  text-center">CategoryImage</TableHead>
+                        <TableHead className="sm:table-cell  text-center ">CategoryImage</TableHead>
                         <TableHead className="sm:table-cell  text-center">CategoryName</TableHead>
-                        <TableHead className="sm:table-cell  text-center">Description</TableHead>
                         <TableHead className="sm:table-cell  text-center">Action</TableHead>
                       </TableRow>
                     </TableHeader>
@@ -349,12 +363,16 @@ export function CategoryDash() {
                     <TableBody>
                       {categories?.map((category) => (
                         <TableRow key={category.id}>
-                          <TableCell className="sm:table-cell">{category.id}</TableCell>
-                          <TableCell className="md:table-cell">{category.image}</TableCell>
-                          <TableCell className="md:table-cell">{category.name}</TableCell>
-                          <TableCell className="md:table-cell">
-                            {category.status === "Active"}
+                          <TableCell className="md:table-cell items-center">
+                            <img
+                              alt="Product image"
+                              className="aspect-square rounded-md object-cover"
+                              height="64"
+                              src={category.image}
+                              width="64"
+                            />
                           </TableCell>
+                          <TableCell className="md:table-cell">{category.name}</TableCell>
                           <TableCell>
                             <DropdownMenu>
                               <DropdownMenuTrigger asChild>
@@ -366,10 +384,10 @@ export function CategoryDash() {
                               <DropdownMenuContent align="end">
                                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
                                 <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                                  {/* <EditDialog User={user} /> */}
+                                  <EditCat category={category} />
                                 </DropdownMenuItem>
                                 <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                                  {/* <DeleteDialog user={user}/> */}
+                                  <DeleteCat category={category} />
                                 </DropdownMenuItem>
                               </DropdownMenuContent>
                             </DropdownMenu>

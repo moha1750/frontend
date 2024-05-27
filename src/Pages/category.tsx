@@ -5,8 +5,9 @@ import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carouse
 import { GlobalContext } from "@/routes/Router"
 import { Category, Product } from "@/types"
 import { useQuery } from "@tanstack/react-query"
-import { Link } from "lucide-react"
 import { useContext } from "react"
+import { Link } from "react-router-dom"
+// getProductsByCategoryId
 
 export function Categories() {
   const context = useContext(GlobalContext)
@@ -68,15 +69,17 @@ export function Categories() {
             {categories?.map((category) => (
               <CarouselItem className=" basis-1/4" key={category.name}>
                 <div className="p-1">
-                  <Card key={category.id} className="w-[300px] h-[400px]">
-                    <CardHeader>
-                      <CardTitle>{category.description}</CardTitle>
-                      <CardDescription>{category.description}</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <img src={category.image} alt="" />
-                    </CardContent>
-                  </Card>
+                  <Link to={`/categories/${category.id}`}>
+                    <Card key={category.id} className="w-[300px] h-[400px]">
+                      <CardHeader>
+                        <CardTitle>{category.description}</CardTitle>
+                        <CardDescription>{category.description}</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <img src={category.image} alt="" />
+                      </CardContent>
+                    </Card>
+                  </Link>
                 </div>
               </CarouselItem>
             ))}

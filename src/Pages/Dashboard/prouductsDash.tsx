@@ -1,4 +1,5 @@
 import {
+  Archive,
   File,
   Home,
   LayoutDashboardIcon,
@@ -158,6 +159,20 @@ export function ProductsDash() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
+                  to="/dashboard/users"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+                >
+                  <Users2 className="h-5 w-5" />
+                  <span className="sr-only">Customers</span>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="right">Customers</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link
                   to="/dashboard/categoriesDash"
                   className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                 >
@@ -168,7 +183,20 @@ export function ProductsDash() {
               <TooltipContent side="right">Categories</TooltipContent>
             </Tooltip>
           </TooltipProvider>
-
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link
+                  to="/dashboard/stockDash"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+                >
+                  <Archive className="h-5 w-5 transition-all group-hover:scale-110" />
+                  <span className="sr-only">Stocks</span>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="right">Stocks</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -181,21 +209,6 @@ export function ProductsDash() {
                 </Link>
               </TooltipTrigger>
               <TooltipContent side="right">Orders</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Link
-                  to="/dashboard/users"
-                  className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
-                >
-                  <Users2 className="h-5 w-5" />
-                  <span className="sr-only">Customers</span>
-                </Link>
-              </TooltipTrigger>
-              <TooltipContent side="right">Customers</TooltipContent>
             </Tooltip>
           </TooltipProvider>
 
@@ -247,7 +260,7 @@ export function ProductsDash() {
                   className="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
                 >
                   <Package2 className="h-5 w-5 transition-all group-hover:scale-110" />
-                  <span className="sr-only">/Categories</span>
+                  <span className="sr-only">Categories</span>
                 </Link>
                 <Link
                   to="/dashboard"
@@ -435,33 +448,20 @@ export function ProductsDash() {
                                 <DropdownMenuLabel>Change Status</DropdownMenuLabel>
 
                                 <DropdownMenuItem
-                                  // value="Draft"
-                                  onSelect={(e) => e.preventDefault()}
+                                  onSelect={(e) => console.log("value ", e.currentTarget)}
                                 >
                                   Draft
                                 </DropdownMenuItem>
                                 <DropdownMenuItem
-                                  // value="Archived"
-                                  onSelect={(e) => e.preventDefault()}
+                                  onClick={() => {
+                                    // update state
+                                  }}
                                 >
                                   Archived
                                 </DropdownMenuItem>
-                                <DropdownMenuItem
-                                  // value="Active"
-                                  onSelect={(e) => e.preventDefault()}
-                                >
+                                <DropdownMenuItem onSelect={(e) => console.log("value ", e.target)}>
                                   Active
                                 </DropdownMenuItem>
-                                <Select>
-                                  <SelectTrigger id="status" aria-label="Select status">
-                                    <SelectValue placeholder="Select status" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="Draft">Draft</SelectItem>
-                                    <SelectItem value="Active">Active</SelectItem>
-                                    <SelectItem value="Archived">Archived</SelectItem>
-                                  </SelectContent>
-                                </Select>
                               </DropdownMenuContent>
                             </DropdownMenu>
                           </TableCell>

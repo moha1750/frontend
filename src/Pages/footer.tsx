@@ -4,9 +4,9 @@ export function FooterSection() {
   return (
     <>
       <footer>
-        <div>
+        <div className="flex items-center">
           <img
-            className="logo"
+            className="items-center"
             src="https://i.ibb.co/WVVJYqV/Malhaja-Logo.png"
             alt="Malhaja Logo"
           />

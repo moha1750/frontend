@@ -21,7 +21,11 @@ import { CategoryView } from "@/Pages/categoryview"
 import { Categories } from "@/Pages/category"
 import { CategoryDash } from "@/Pages/Dashboard/categoryDash"
 import { EditCategory } from "@/Pages/Dashboard/editCategory"
-// import { CategoryDash } from "@/Pages/Dashboard/categoryDash"
+import { StockDash } from "@/Pages/Dashboard/stockDash"
+import { EditStock } from "@/Pages/Dashboard/editStock"
+import { CategoryDetails } from "@/Pages/categoryDetails"
+import { Checkout } from "@/Pages/checkout"
+import { Profile } from "@/Pages/profile"
 
 const router = createBrowserRouter([
   {
@@ -35,6 +39,10 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <Login />
+  },
+  {
+    path: "/profile",
+    element: <Profile />
   },
   {
     path: "/Pages/login/forgotPass",
@@ -57,6 +65,10 @@ const router = createBrowserRouter([
     element: <CategoryView />
   },
   {
+    path: "/checkout",
+    element: <Checkout />
+  },
+  {
     path: "/products",
     element: <Products />
   },
@@ -65,6 +77,10 @@ const router = createBrowserRouter([
     element: <ProductDetails />
   },
 
+  {
+    path: "/categories/:categoryId",
+    element: <CategoryDetails />
+  },
   {
     path: "/dashboard",
     element: (
@@ -90,18 +106,26 @@ const router = createBrowserRouter([
     )
   },
   {
-    path: "/dashboard/ordersDash",
-    element: (
-      <PrivateRouter>
-        <OrdersDash />
-      </PrivateRouter>
-    )
-  },
-  {
     path: "/dashboard/productsDash",
     element: (
       <PrivateRouter>
         <ProductsDash />
+      </PrivateRouter>
+    )
+  },
+  {
+    path: "/dashboard/stockDash",
+    element: (
+      <PrivateRouter>
+        <StockDash />
+      </PrivateRouter>
+    )
+  },
+  {
+    path: "/dashboard/ordersDash",
+    element: (
+      <PrivateRouter>
+        <OrdersDash />
       </PrivateRouter>
     )
   },
@@ -126,6 +150,14 @@ const router = createBrowserRouter([
     element: (
       <PrivateRouter>
         <EditProducts />
+      </PrivateRouter>
+    )
+  },
+  {
+    path: "/dashboard/editStock",
+    element: (
+      <PrivateRouter>
+        <EditStock />
       </PrivateRouter>
     )
   }

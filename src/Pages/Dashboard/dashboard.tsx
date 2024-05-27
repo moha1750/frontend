@@ -79,9 +79,13 @@ export function Dashboard() {
           >
             Products
           </Link>
+          <Link to="/dashboard/stockDash" className="text-muted-foreground hover:text-foreground">
+            Stocks
+          </Link>
           <Link to="/dashboard/ordersDash" className="text-muted-foreground hover:text-foreground">
             Orders
           </Link>
+
           <Link
             to="/dashboard/analytics"
             className="text-muted-foreground transition-colors hover:text-foreground"
@@ -98,6 +102,12 @@ export function Dashboard() {
           </SheetTrigger>
           <SheetContent side="left">
             <nav className="grid gap-6 text-lg font-medium">
+              <Link to="/dashboard" className="hover:text-foreground">
+                Dashboard
+              </Link>
+              <Link to="/dashboard/users" className="text-muted-foreground hover:text-foreground">
+                Users
+              </Link>
               <Link
                 to="/dashboard/categoriesDash"
                 className="flex items-center gap-2 text-lg font-semibold"
@@ -105,23 +115,23 @@ export function Dashboard() {
                 <Package2 className="h-6 w-6" />
                 <span className="sr-only">Categories</span>
               </Link>
-              <Link to="/dashboard" className="hover:text-foreground">
-                Dashboard
-              </Link>
-              <Link
-                to="/dashboard/ordersDash"
-                className="text-muted-foreground hover:text-foreground"
-              >
-                Orders
-              </Link>
               <Link
                 to="/dashboard/productsDash"
                 className="text-muted-foreground hover:text-foreground"
               >
                 Products
               </Link>
-              <Link to="/dashboard/users" className="text-muted-foreground hover:text-foreground">
-                Users
+              <Link
+                to="/dashboard/stockDash"
+                className="text-muted-foreground hover:text-foreground"
+              >
+                Stocks
+              </Link>
+              <Link
+                to="/dashboard/ordersDash"
+                className="text-muted-foreground hover:text-foreground"
+              >
+                Orders
               </Link>
               <Link
                 to="/dashboard/analytics"

@@ -1,12 +1,15 @@
-import { Button } from "@/components/ui/button"
+import api from "@/api"
+import { SearchInput } from "@/components/search"
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle
-} from "@/components/ui/card"
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator
+} from "@/components/ui/breadcrumb"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,65 +28,41 @@ import {
   SelectValue
 } from "@/components/ui/select"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow
-} from "@/components/ui/table"
-import { Textarea } from "@/components/ui/textarea"
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { Link, useNavigate } from "react-router-dom"
+import { GlobalContext } from "@/routes/Router"
+import { Product, Stock } from "@/types"
+import { useQuery } from "@tanstack/react-query"
 import {
-  Breadcrumb,
-  BreadcrumbList,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbSeparator,
-  BreadcrumbPage
-} from "@/components/ui/breadcrumb"
-import {
-  Package2,
-  ShoppingCart,
-  Package,
-  Users2,
-  LineChart,
-  Settings,
-  PanelLeft,
-  ChevronLeft,
-  PlusCircle,
-  Upload,
   Home,
   LayoutDashboardIcon,
-  Archive
+  LineChart,
+  Package,
+  Package2,
+  PanelLeft,
+  Settings,
+  ShoppingCart,
+  Users2
 } from "lucide-react"
-import { GlobalContext } from "@/routes/Router"
 import { ChangeEvent, FormEvent, useContext, useState } from "react"
-import { SearchInput } from "@/components/search"
-import api from "@/api"
-import { useQuery } from "@tanstack/react-query"
-import { Category } from "@/types"
-import { Value } from "@radix-ui/react-select"
+import { Link } from "react-router-dom"
 
-export function EditProducts() {
-  const [product, setProduct] = useState({
-    name: "",
-    image: "",
-    description: "",
-    categoryId: "",
-    status: "Draft"
+export function EditStock() {
+  const [stock, setStock] = useState({
+    price: 0,
+    quantity: 0,
+    size: "",
+    color: "",
+    productId: ""
   })
+
   const context = useContext(GlobalContext)
   if (!context) throw Error("Context is Missing")
   const { handleLogoutUser } = context
 
-  const getCategories = async () => {
+  const getProducts = async () => {
     try {
       const token = localStorage.getItem("token")
-      const res = await api.get("/categories", {
+      const res = await api.get("/products", {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -94,22 +73,13 @@ export function EditProducts() {
       return Promise.reject(new Error("Something went wrong"))
     }
   }
-  const { data: categories, error: catError } = useQuery<Category[]>({
-    queryKey: ["categories"],
-    queryFn: getCategories
+  const { data: products, error: catError } = useQuery<Product[]>({
+    queryKey: ["products"],
+    queryFn: getProducts
   })
 
-  // const productWithCat = products?.map((product) => {
-  //   const category = categories?.find((cat) => cat.id === product.categoryId)
-  //   console.log(category)
-  //   if (category) {
-  //     return {
-  //       ...product,
-  //       categoryId: category.name
-  //     }
-  //   }
-  //   return product
-  // })
+  console.log("products ", products)
+
   const handleLogout = () => {
     if (typeof window !== undefined) {
       window.location.reload()
@@ -118,10 +88,10 @@ export function EditProducts() {
     localStorage.removeItem("user")
     handleLogoutUser()
   }
-  const handleAddProduct = async () => {
+  const handleAddStock = async () => {
     try {
       const token = localStorage.getItem("token")
-      const res = await api.post("/products", product, {
+      const res = await api.post("/stocks", stock, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -133,16 +103,16 @@ export function EditProducts() {
     }
   }
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    console.log(value)
-    setProduct({
-      ...product,
-      [name]: value
+    const { name, value, valueAsNumber } = e.target
+
+    setStock({
+      ...stock,
+      [name]: name == "quantity" || name == "price" ? valueAsNumber : value
     })
   }
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
-    await handleAddProduct()
+    await handleAddStock()
   }
 
   return (
@@ -170,32 +140,19 @@ export function EditProducts() {
               <TooltipContent side="right">Dashboard</TooltipContent>
             </Tooltip>
           </TooltipProvider>
+
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  to="/dashboard/users"
-                  className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+                  to="/dashboard/ordersDash"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-accent-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                 >
-                  <Users2 className="h-5 w-5" />
-                  <span className="sr-only">Customers</span>
+                  <ShoppingCart className="h-5 w-5" />
+                  <span className="sr-only">Orders</span>
                 </Link>
               </TooltipTrigger>
-              <TooltipContent side="right">Customers</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Link
-                  to="/dashboard/categoriesDash"
-                  className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
-                >
-                  <Package2 className="h-5 w-5 transition-all group-hover:scale-110" />
-                  <span className="sr-only">Categories</span>
-                </Link>
-              </TooltipTrigger>
-              <TooltipContent side="right">Categories</TooltipContent>
+              <TooltipContent side="right">Orders</TooltipContent>
             </Tooltip>
           </TooltipProvider>
 
@@ -213,32 +170,19 @@ export function EditProducts() {
               <TooltipContent side="right">Products</TooltipContent>
             </Tooltip>
           </TooltipProvider>
+
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  to="/dashboard/stockDash"
+                  to="/dashboard/users"
                   className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                 >
-                  <Archive className="h-5 w-5 transition-all group-hover:scale-110" />
-                  <span className="sr-only">Stocks</span>
+                  <Users2 className="h-5 w-5" />
+                  <span className="sr-only">Customers</span>
                 </Link>
               </TooltipTrigger>
-              <TooltipContent side="right">Stocks</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Link
-                  to="/dashboard/ordersDash"
-                  className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-accent-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
-                >
-                  <ShoppingCart className="h-5 w-5" />
-                  <span className="sr-only">Orders</span>
-                </Link>
-              </TooltipTrigger>
-              <TooltipContent side="right">Orders</TooltipContent>
+              <TooltipContent side="right">Customers</TooltipContent>
             </Tooltip>
           </TooltipProvider>
 
@@ -340,12 +284,12 @@ export function EditProducts() {
               <BreadcrumbSeparator />
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link to="/dashboard/productsDash">Products</Link>
+                  <Link to="/dashboard/StockDash">Stocks</Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbPage>Edit Product</BreadcrumbPage>
+                <BreadcrumbPage>Edit Stock</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
@@ -378,14 +322,14 @@ export function EditProducts() {
           <div className="mx-auto grid max-w-[59rem] flex-1 auto-rows-max gap-4">
             <div className="flex items-center gap-4">
               <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
-                Product Controller
+                Stock Controller
               </h1>
               <div className="hidden items-center gap-2 md:ml-auto md:flex">
                 <Button variant="outline" size="sm">
                   Discard
                 </Button>
                 <Button onClick={handleSubmit} size="sm">
-                  Save Product
+                  Save Stock
                 </Button>
               </div>
             </div>
@@ -394,131 +338,103 @@ export function EditProducts() {
                 <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8">
                   <Card x-chunk="dashboard-07-chunk-0">
                     <CardHeader>
-                      <CardTitle>Product Details</CardTitle>
-                      <CardDescription>Add Product</CardDescription>
+                      <CardTitle>Stock Details</CardTitle>
+                      <CardDescription>Add Stock</CardDescription>
                     </CardHeader>
                     <CardContent>
                       <div className="grid gap-6">
                         <div className="grid gap-3">
-                          <Label htmlFor="name">Product&apos;s Name</Label>
+                          <Label htmlFor="name">Stock&apos;s Name</Label>
                           <Input
                             id="name"
                             name="name"
                             type="text"
                             className="w-full"
-                            placeholder="write The Product's Name here "
+                            placeholder="Stock's Name "
                             onChange={handleChange}
                           />
                         </div>
                         <div className="grid gap-3">
-                          <Label htmlFor="description">Description</Label>
+                          <Label htmlFor="price">Price</Label>
                           <Input
-                            name="description"
-                            id="description"
-                            placeholder="Product Description "
+                            name="price"
+                            id="price"
+                            type="number"
+                            placeholder="Price "
                             className="min-h-32"
                             onChange={handleChange}
                           />
-                          <Card x-chunk="dashboard-07-chunk-3">
-                            <CardHeader>
-                              <CardTitle>Category</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                              <div className="grid gap-6 ">
-                                <div className="grid gap-3">
-                                  <Label htmlFor="category">Select Category</Label>
-                                  <Select
-                                    onValueChange={(value) => {
-                                      setProduct({
-                                        ...product,
-                                        categoryId: value
-                                      })
-                                    }}
-                                  >
-                                    <SelectTrigger id="category" aria-label="Select category">
-                                      <SelectValue placeholder="Select category" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      {categories?.map((category) => (
-                                        <SelectItem key={category.name} value={category.id}>
-                                          {category.name}
-                                        </SelectItem>
-                                      ))}
-                                    </SelectContent>
-                                  </Select>
-                                </div>
-                              </div>
-                            </CardContent>
-                          </Card>
                         </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                  <Card x-chunk="dashboard-07-chunk-3">
-                    <CardHeader>
-                      <CardTitle>Product Status</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="grid gap-6">
                         <div className="grid gap-3">
-                          <Label htmlFor="status">Status</Label>
-                          <Select
-                            onValueChange={(value) => {
-                              setProduct({ ...product, status: value })
-                              console.log(product)
-                            }}
-                          >
-                            <SelectTrigger id="status" aria-label="Select status">
-                              <SelectValue placeholder="Select status" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="Draft">Draft</SelectItem>
-                              <SelectItem value="Active">Active</SelectItem>
-                              <SelectItem value="Archived">Archived</SelectItem>
-                            </SelectContent>
-                          </Select>
+                          <Label htmlFor="color">Color</Label>
+                          <Input
+                            name="color"
+                            id="color"
+                            placeholder="Color "
+                            className="min-h-32"
+                            onChange={handleChange}
+                          />
+                        </div>
+                        <div className="grid gap-3">
+                          <Label htmlFor="size">Size</Label>
+                          <Input
+                            name="size"
+                            id="size"
+                            placeholder="Size "
+                            className="min-h-32"
+                            onChange={handleChange}
+                          />
+                        </div>
+                        <div className="grid gap-3">
+                          <Label htmlFor="size">Quantity</Label>
+                          <Input
+                            name="quantity"
+                            id="quantity"
+                            type="number"
+                            placeholder="Quantity "
+                            className="min-h-32"
+                            onChange={handleChange}
+                          />
                         </div>
                       </div>
                     </CardContent>
                   </Card>
-                </div>
-                <div className="grid auto-rows-max items-start gap-4 lg:gap-8">
-                  <Card className="overflow-hidden" x-chunk="dashboard-07-chunk-4">
-                    <CardHeader>
-                      <CardTitle>Product Images</CardTitle>
-                      <CardDescription>Add Product&apos;s Images here.</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="grid gap-2">
-                        <Input
-                          onChange={handleChange}
-                          name="image"
-                          placeholder=" insert image Url here"
-                        ></Input>
-                      </div>
-                    </CardContent>
-                  </Card>
-                  <Card x-chunk="dashboard-07-chunk-5">
-                    <CardHeader>
-                      <CardTitle>Archive Product</CardTitle>
-                      <CardDescription>to hide your product from view.</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <Button size="sm" variant="secondary">
-                        Archive Product
-                      </Button>
-                    </CardContent>
-                  </Card>
+                  <div className="grid auto-rows-max items-start gap-4 lg:gap-8">
+                    <Card className="overflow-hidden" x-chunk="dashboard-07-chunk-4">
+                      <CardHeader>
+                        <CardTitle>Product</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="grid gap-6 ">
+                          <div className="grid gap-3">
+                            <Label htmlFor="product">Select Product</Label>
+                            <Select
+                              onValueChange={(value) => {
+                                setStock({
+                                  ...stock,
+                                  productId: value
+                                })
+                              }}
+                            >
+                              <SelectTrigger id="productId" aria-label="Select Product">
+                                <SelectValue placeholder="Select Product" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {products?.map((product) => (
+                                  <SelectItem key={product.id} value={product.id}>
+                                    {product.name}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
                 </div>
               </div>
             </form>
-
-            <div className="flex items-center justify-center gap-2 md:hidden">
-              <Button variant="outline" size="sm">
-                Discard
-              </Button>
-              <Button size="sm">Save Product</Button>
-            </div>
           </div>
         </main>
       </div>
