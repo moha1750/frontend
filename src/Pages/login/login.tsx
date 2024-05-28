@@ -22,7 +22,7 @@ export function Login() {
   })
   const handleSignIn = async () => {
     try {
-      const res = await api.post(`/users/signin`, user)
+      const res = await api.post(`/users/signIn`, user)
       return res.data
     } catch (error) {
       console.error(error)

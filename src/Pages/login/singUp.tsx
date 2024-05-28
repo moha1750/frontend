@@ -17,7 +17,7 @@ export function SingUp() {
   })
   const handleSignUp = async () => {
     try {
-      const res = await api.post(`/users/signup`, user)
+      const res = await api.post(`/users/signUp`, user)
       return res.data
     } catch (error) {
       console.error(error)
