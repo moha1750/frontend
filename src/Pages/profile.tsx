@@ -12,28 +12,32 @@ import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Link } from "react-router-dom"
-import { useContext } from "react"
+import { ChangeEvent, FormEvent, useContext, useState } from "react"
 import api from "@/api"
 import { useQuery } from "@tanstack/react-query"
 import { GlobalContext } from "@/routes/Router"
 import { Address, Order, User } from "@/types"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { NavBar } from "@/components/navBar"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu"
+
 import { MoreHorizontal } from "lucide-react"
 import { EditUser } from "@/components/editUser"
+import { AddAddress } from "@/components/addAdaress"
 
 export function Profile() {
+  const [address, setAddress] = useState({
+    id: "",
+    city: "",
+    zip: "",
+    addressLine: "",
+    userId: ""
+  })
   const context = useContext(GlobalContext)
+
   if (!context) throw Error("COntext is missing")
   const { state } = context
   const token = localStorage.getItem("token")
+
   const getUser = async () => {
     try {
       const res = await api.get(`/users/email/${state.user?.emailaddress}`, {
@@ -51,22 +55,48 @@ export function Profile() {
   })
   const findCustomer = state.user
   console.log(findCustomer)
-  const getAddress = async () => {
+  const handleAddAddress = async () => {
     try {
-      const res = await api.post("/addresses")
+      const token = localStorage.getItem("token")
+      const res = await api.post("/addresses", address, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
       return res.data
     } catch (error) {
       console.error(error)
-      return Promise.reject(new Error("Something went wrong"))
+      return Promise.reject(new Error("Product already exists "))
     }
   }
-  const { data: address, error: addressError } = useQuery<Address[]>({
-    queryKey: ["address"],
-    queryFn: getAddress
-  })
-  const getAddressFromUser = address?.filter(
-    (address) => address.userId == state.user?.nameidentifier
-  )
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    console.log(value)
+    setAddress({
+      ...address,
+      [name]: value
+    })
+  }
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault()
+    await handleAddAddress()
+  }
+  // const postAddress = async () => {
+  //   try {
+  //     const res = await api.post("/addresses")
+  //     return res.data
+  //   } catch (error) {
+  //     console.error(error)
+  //     return Promise.reject(new Error("Something went wrong"))
+  //   }
+  // }
+  // const { data: address, error: addressError } = useQuery<Address>({
+  //   queryKey: ["address"],
+  //   queryFn: postAddress
+  // })
+  // const postAddress = address?.push(
+  //   (address?) => address.userId == state.user?.nameidentifier
+  // )
   return (
     <>
       <NavBar />
@@ -138,17 +168,16 @@ export function Profile() {
 
                 <TableBody>
                   <TableRow>
-                    <TableCell className="sm:table-cell">{user?.firstName}</TableCell>
-                    <TableCell className="md:table-cell">{user?.lastName}</TableCell>
-                    <TableCell className="md:table-cell">{user?.email}</TableCell>
+                    <TableCell className="sm:table-cell">{address?.city}</TableCell>
+                    <TableCell className="md:table-cell">{address?.zip}</TableCell>
+                    <TableCell className="md:table-cell">{address?.addressLine}</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
             </CardContent>
             <CardFooter>
-              <Button>
-                {/* <EditUser User={user} /> */}
-                Edit Address
+              <Button onClick={handleSubmit}>
+                <AddAddress address={address} />
               </Button>
             </CardFooter>
           </Card>

@@ -38,7 +38,7 @@ export function NavBar() {
     handleLogoutUser()
   }
   return (
-    <nav className="flex justify-between mb-4">
+    <nav className="flex justify-between mb-4 ">
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         <div>
           <img
