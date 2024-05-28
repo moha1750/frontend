@@ -27,6 +27,7 @@ export type Product = {
   size: string
   color: string
   stockId: string
+
 }
 export type Order = {
   id: string
@@ -42,6 +43,7 @@ export type Stock = {
   size: string
   color: string
   productId: string
+  
 }
 export type orderStock = {
   id: string

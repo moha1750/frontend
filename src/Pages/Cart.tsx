@@ -16,6 +16,9 @@ export function Cart() {
     const curGroup = acc[key] ?? []
     return { ...acc, [key]: [...curGroup, obj] }
   }, {})
+  const total = state.cart.reduce((acc, curr) => {
+    return acc + curr.price
+  }, 0)
   const keys = Object.keys(groups)
 
   return (

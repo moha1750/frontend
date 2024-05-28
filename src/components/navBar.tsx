@@ -4,9 +4,17 @@ import {
   NavigationMenuLink,
   NavigationMenuList
 } from "@/components/ui/navigation-menu"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu"
 import { Link } from "react-router-dom"
 import { Cart } from "@/Pages/Cart"
-import { LogOutIcon } from "lucide-react"
+import { CircleUser, LogOutIcon } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { GlobalContext } from "@/routes/Router"
 import { useContext } from "react"
@@ -14,6 +22,7 @@ import { ModeToggle } from "./modeToggle"
 import { SearchInput } from "./search"
 import { Button } from "./ui/button"
 import { ThemeProvider } from "./themeProvider"
+import { profile } from "console"
 
 export function NavBar() {
   const context = useContext(GlobalContext)
@@ -45,9 +54,6 @@ export function NavBar() {
               <Link to="/">
                 <NavigationMenuLink>Home</NavigationMenuLink>
               </Link>
-              <Link to="/profile">
-                <NavigationMenuLink>Profile</NavigationMenuLink>
-              </Link>
             </NavigationMenuItem>
             {state.user?.role === "Admin" && (
               <NavigationMenuItem>
@@ -77,11 +83,13 @@ export function NavBar() {
                 <NavigationMenuLink>ContactUs</NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
-            <NavigationMenuItem>
-              <Link to="/login">
-                <NavigationMenuLink>Login</NavigationMenuLink>
-              </Link>
-            </NavigationMenuItem>
+            {!state.user && (
+              <NavigationMenuItem>
+                <Link to="/login">
+                  <NavigationMenuLink>Login</NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
+            )}
             {!state.user && (
               <NavigationMenuItem>
                 <Link to="/singUp">
@@ -97,13 +105,23 @@ export function NavBar() {
             <ModeToggle />
             <Cart />
             {state.user && (
-              <Button
-                onClick={handleLogout}
-                className="flex flex-col h-16 relative hover:!bg-background"
-                variant="ghost"
-              >
-                <LogOutIcon />
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="secondary" size="icon" className="rounded-full">
+                    <CircleUser className="h-5 w-5" />
+                    <span className="sr-only">Toggle user menu</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <Link to="/profile" className="">
+                    <DropdownMenuLabel>Profile</DropdownMenuLabel>
+                  </Link>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>Settings</DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             )}
           </div>
         </form>

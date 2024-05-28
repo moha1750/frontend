@@ -59,7 +59,7 @@ export function CategoryDetails() {
               <CardContent>
                 <img src={product.image} alt="" />
               </CardContent>
-              <CardContent>Price:({product.price})</CardContent>
+              <CardContent>SAR {product.price}</CardContent>
               <CardDescription>{product.description}</CardDescription>
               <Button
                 disabled={!product.stockId}

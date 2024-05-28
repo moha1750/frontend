@@ -1,4 +1,5 @@
 import api from "@/api"
+import { GoogleLogin } from "react-google-login"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -12,6 +13,7 @@ export function Login() {
   const context = useContext(GlobalContext)
   if (!context) throw Error("Context is Missing")
   const { handleStoreUser } = context
+  // const clientId = "AIzaSyC5KZPS5-yhz1DhFuWCnX5rWpRZlrWCY_Y"
 
   const navigate = useNavigate()
   const [user, setUser] = useState({
@@ -38,6 +40,7 @@ export function Login() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     const token = await handleSignIn()
+    console.log(token)
     if (token) {
       localStorage.setItem("token", token)
       const decodedToken = jwt(token)
@@ -90,9 +93,11 @@ export function Login() {
               <Button type="submit" className="w-full">
                 Login
               </Button>
-              <Button variant="outline" className="w-full">
-                Login with Google
-              </Button>
+              {/* <div id="signIn">
+                <Button variant="outline" className="w-full">
+                  <GoogleLogin clientId={clientId} />
+                </Button>
+              </div> */}
             </div>
             <div className="mt-4 text-center text-sm">
               Don&apos;t have an account?{" "}

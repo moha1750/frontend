@@ -25,9 +25,9 @@ export function Profile() {
   if (!context) throw Error("COntext is missing")
   const { state } = context
   const token = localStorage.getItem("token")
-  const getUsers = async () => {
+  const getUser = async () => {
     try {
-      const res = await api.get(`/users?sort=0&search=${state.search}`, {
+      const res = await api.get(`/users/email/${state.user?.emailaddress}`, {
         headers: { Authorization: `Bearer ${token}` }
       })
       return res.data
@@ -36,11 +36,12 @@ export function Profile() {
       return Promise.reject(new Error("Something went wrong"))
     }
   }
-  const { data: users, error } = useQuery<User[]>({
+  const { data: user, error } = useQuery<User>({
     queryKey: ["user"],
-    queryFn: getUsers
+    queryFn: getUser
   })
-  const findCustomer = users?.find((user) => user.id == state.user?.nameidentifier)
+  const findCustomer = state.user
+  console.log(findCustomer)
   const getOrders = async () => {
     try {
       const res = await api.get("/order")
@@ -62,50 +63,52 @@ export function Profile() {
       <div className="flex flex-col md:grid md:grid-cols-[280px_1fr] gap-6 p-4 md:p-6">
         <div className="  rounded-lg p-6 border">
           <div className="flex items-center gap-4">
-            <Avatar className="h-16 w-16">
+            <Avatar className="h-8 w-8">
               <AvatarImage alt="Customer Avatar" src="/placeholder-avatar.jpg" />
               <AvatarFallback>{state.user?.name.slice(0, 1)}</AvatarFallback>
             </Avatar>
-            <div className="grid gap-1">
-              <h2 className="text-xl font-bold">{state.user?.name}</h2>
-              <div>{state.user?.emailaddress}</div>
-              <div>{findCustomer?.email}</div>
+            <div className="grid gap-1 text-contain">
+              <h3 className="text-xl ">@{state.user?.name}</h3>
+              <div>
+                <h4>{user?.email}</h4>
+              </div>
             </div>
           </div>
         </div>
-        {users?.map((user) => (
-          <Card key={user.id}>
-            <CardHeader>
-              <CardTitle>Personal Information</CardTitle>
-            </CardHeader>
-            <CardContent className="grid gap-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="flex flex-col py-3 justify-between items-center">
-                  <Label className="mb-1  md:text-lg" htmlFor="name">
-                    First Name
-                  </Label>
-                  <p className="text-lg font-semibold">{user.firstName}</p>
+        {/* ask for help here to fix the page 
+        also  how to show the profile link for users only */}
 
-                  <Label className="mb-1  md:text-lg" htmlFor="name">
-                    Last Name
-                  </Label>
-                  <p className="text-lg font-semibold">{user.lastName}</p>
+        <Card>
+          <CardHeader>
+            <CardTitle>Personal Information</CardTitle>
+          </CardHeader>
+          <CardContent className="grid gap-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col py-3 justify-between items-center">
+                <Label className="mb-1  md:text-lg" htmlFor="name">
+                  First Name
+                </Label>
+                <p className="text-lg font-semibold">{user?.firstName}</p>
 
-                  <Label className="mb-1  md:text-lg" htmlFor="phone">
-                    Email
-                  </Label>
-                  <p>{user.email}</p>
+                <Label className="mb-1  md:text-lg" htmlFor="name">
+                  Last Name
+                </Label>
+                <p className="text-lg font-semibold">{user?.lastName}</p>
 
-                  <Label htmlFor="phone">Phone</Label>
-                  <p className="text-lg font-semibold">{user.phone}</p>
-                </div>
+                <Label className="mb-1  md:text-lg" htmlFor="phone">
+                  Email
+                  <p>{user?.email}</p>
+                </Label>
+
+                <Label htmlFor="phone">Phone</Label>
+                <p className="text-lg font-semibold">{user?.phone}</p>
               </div>
-            </CardContent>
-            <CardFooter>
-              <Button>Save Changes</Button>
-            </CardFooter>
-          </Card>
-        ))}
+            </div>
+          </CardContent>
+          <CardFooter>
+            <Button>Save Changes</Button>
+          </CardFooter>
+        </Card>
         <div className="grid gap-6">
           <Card>
             <CardHeader>

@@ -59,6 +59,7 @@ export function ProductView() {
                     <CardContent>
                       <img src={product.image} alt="" />
                     </CardContent>
+                    <CardContent>SAR{product.price}</CardContent>
                     <CardFooter className="flex justify-between">
                       <Button
                         disabled={!product.stockId}

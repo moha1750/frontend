@@ -33,6 +33,7 @@ import { GlobalContext } from "@/routes/Router"
 import { Product, Stock } from "@/types"
 import { useQuery } from "@tanstack/react-query"
 import {
+  CircleUser,
   Home,
   LayoutDashboardIcon,
   LineChart,
@@ -299,20 +300,16 @@ export function EditStock() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="icon" className="overflow-hidden rounded-full">
-                <img
-                  src="/placeholder-user.jpg"
-                  width={36}
-                  height={36}
-                  alt="Avatar"
-                  className="overflow-hidden rounded-full"
-                />
+                <CircleUser className="h-5 w-5" />
+                <span className="sr-only">Toggle user menu</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <Link to="/profile" className="">
+                <DropdownMenuLabel>Profile</DropdownMenuLabel>
+              </Link>
               <DropdownMenuSeparator />
               <DropdownMenuItem>Settings</DropdownMenuItem>
-              <DropdownMenuItem>Support</DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
             </DropdownMenuContent>

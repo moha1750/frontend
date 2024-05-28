@@ -170,6 +170,7 @@ type GlobalContextType = {
   handleLogoutUser: () => void
   handleStoreUser: (user: DecodedUser) => void
   handleSearch: (e: ChangeEvent<HTMLInputElement>) => void
+  handleRemoveFromCart: () => void
 }
 type GlobalState = {
   cart: Product[]
@@ -186,7 +187,6 @@ export function Router() {
     user: null,
     search: ""
   })
-  console.log(state.cart)
   const queryClient = useQueryClient()
 
   useEffect(() => {
@@ -213,6 +213,12 @@ export function Router() {
     //   ...state,
     //   cart: filteredCart
     // })
+  }
+  const handleRemoveFromCart = () => {
+    setState({
+      ...state,
+      cart: []
+    })
   }
   const handleAddToCart = (product: Product) => {
     // to not allow any duplicating
@@ -252,7 +258,8 @@ export function Router() {
         handleDeleteFromCart,
         handleStoreUser,
         handleSearch,
-        handleLogoutUser
+        handleLogoutUser,
+        handleRemoveFromCart
       }}
     >
       <RouterProvider router={router} />

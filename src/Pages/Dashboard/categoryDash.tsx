@@ -57,7 +57,8 @@ import {
   ShoppingCart,
   File,
   Users2,
-  Archive
+  Archive,
+  CircleUser
 } from "lucide-react"
 import { useContext } from "react"
 import { Link } from "react-router-dom"
@@ -284,20 +285,16 @@ export function CategoryDash() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="icon" className="overflow-hidden rounded-full">
-                <img
-                  src="/placeholder-user.jpg"
-                  width={36}
-                  height={36}
-                  alt="Avatar"
-                  className="overflow-hidden rounded-full"
-                />
+                <CircleUser className="h-5 w-5" />
+                <span className="sr-only">Toggle user menu</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <Link to="/profile" className="">
+                <DropdownMenuLabel>Profile</DropdownMenuLabel>
+              </Link>
               <DropdownMenuSeparator />
               <DropdownMenuItem>Settings</DropdownMenuItem>
-              <DropdownMenuItem>Support</DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
             </DropdownMenuContent>

@@ -48,12 +48,12 @@ export function ProductDetails() {
             <CardContent>
               <img src={product.image} alt="" />
             </CardContent>
-            <CardDescription>{product.description}</CardDescription>
+            <CardContent>SAR{product.price}</CardContent>
           </CardHeader>
         </Card>
 
         <div className="w-full grid grid-cols-2">
-          <Card className="w-full hover:">
+          <Card className="w-full ">
             <CardHeader>
               {Object.keys(groups).length > 0 ? (
                 Object.keys(groups).map((key) => {

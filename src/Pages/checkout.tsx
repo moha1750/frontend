@@ -1,19 +1,37 @@
 import api from "@/api"
 import { NavBar } from "@/components/navBar"
+import { Cart } from "@/Pages/Cart"
 import { Button } from "@/components/ui/button"
-import { Card, CardHeader } from "@/components/ui/card"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from "@/components/ui/table"
 import { GlobalContext } from "@/routes/Router"
 import { Product } from "@/types"
 import { useQuery } from "@tanstack/react-query"
 import { useContext } from "react"
 import { Link } from "react-router-dom"
 
+type OrderItems = {
+  quantity: number
+  amount: number
+  stockId: string
+  status: "Card"
+}
+type OrderCheckout = {
+  items: OrderItems[]
+}
 export function Checkout() {
   const context = useContext(GlobalContext)
   if (!context) throw Error("GLobal context is missing")
-  const { handleAddToCart, handleDeleteFromCart, state } = context
+  const { handleAddToCart, handleDeleteFromCart, state, handleRemoveFromCart } = context
   const getProducts = async () => {
     try {
       const res = await api.get("/products")
@@ -27,7 +45,7 @@ export function Checkout() {
     const key = obj.id
     const curGroup = acc[key] ?? []
     return { ...acc, [key]: [...curGroup, obj] }
-  }, {})
+  }, {} as { [productId: string]: Product[] })
   // Queries
   const {
     data: products,
@@ -37,6 +55,37 @@ export function Checkout() {
     queryKey: ["products"],
     queryFn: getProducts
   })
+  const handleCheckout = async () => {
+    try {
+      const checkoutOrder: OrderCheckout = {
+        items: []
+      }
+      Object.keys(groups).forEach((key) => {
+        const products = groups[key]
+        checkoutOrder.items.push({
+          quantity: products.length,
+          amount: 0,
+          stockId: "",
+          status: "Card"
+          // it should be fixed ask for help
+        })
+      })
+      const token = localStorage.getItem("token")
+      const res = await api.post("/payment", checkoutOrder, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      if (res.status === 201) {
+        handleRemoveFromCart()
+      }
+      return res.data
+    } catch (error) {
+      console.error(error)
+      return Promise.reject(new Error("Something went wrong"))
+    }
+  }
+
   if (isPending) {
     return <p>Loading...</p>
   }
@@ -54,39 +103,69 @@ export function Checkout() {
           <div className="relative"></div>
         </div>
       </div>
-      <div className="grid sm:px-10 lg:grid-cols-2 lg:px-20 xl:px-32">
-        <div className="px-4 pt-8">
-          <p className="text-xl font-medium">Order Summary</p>
-          <p>Check your items.</p>
-          <div className="mt-8 space-y-3 rounded-lg border  px-2 py-4 sm:px-6">
-            <Card className="w-full">
-              <CardHeader>
-                {Object.keys(groups).length > 0 ? (
-                  Object.keys(groups).map((key) => {
-                    const products = groups[key]
-                    const product = products[0]
-                    return (
-                      <div className="mb-4 flex items-center gap-4" key={product.id}>
-                        <img className="w-10 h-10 object-contain" src={product.image} alt="" />
-                        <h3>{product.name}</h3>
-                        <Button variant="outline" onClick={() => handleDeleteFromCart(product.id)}>
-                          -
-                        </Button>
-                        <span className="font-bold">{products.length}</span>
-                        <Button variant="outline" onClick={() => handleAddToCart(product)}>
-                          +
-                        </Button>
-                        <p>price:{product.price}</p>
-                      </div>
-                    )
-                  })
-                ) : (
-                  <h3>Cart is Empty </h3>
-                )}
-              </CardHeader>
+      <div className="grid lg:grid-cols-2 object-contain">
+        <p className="text-xl font-medium">Order Summary</p>
+        <p></p>
+        <Table className="object-contain">
+          <TableHeader>
+            <TableRow>
+              <TableHead className="hidden sm:table-cell  text-center"></TableHead>
+              <TableHead className="hidden sm:table-cell  text-center"></TableHead>
+              <TableHead className="hidden sm:table-cell  text-center"></TableHead>
+              <TableHead className="hidden sm:table-cell  text-center"></TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <Card className="w-full  object-contain">
+              <CardContent>
+                <TableRow>
+                  {Object.keys(groups).length > 0 ? (
+                    Object.keys(groups).map((key) => {
+                      const products = groups[key]
+                      const product = products[0]
+                      return (
+                        <div
+                          className="mb-4 flex items-center gap-4 object-contain"
+                          key={product.id}
+                        >
+                          <TableCell>
+                            <img className="w-10 h-10 object-contain" src={product.image} alt="" />
+                          </TableCell>
+                          <TableCell>
+                            <h3>{product.name}</h3>
+                          </TableCell>
+                          <TableCell>
+                            <Button
+                              variant="outline"
+                              onClick={() => handleDeleteFromCart(product.id)}
+                            >
+                              -
+                            </Button>
+                          </TableCell>
+                          <TableCell>
+                            <span className="font-bold">{products.length}</span>
+                          </TableCell>
+                          <TableCell>
+                            <Button variant="outline" onClick={() => handleAddToCart(product)}>
+                              +
+                            </Button>
+                          </TableCell>
+                          <TableCell>
+                            <p>price:{product.price}</p>
+                          </TableCell>
+                        </div>
+                      )
+                    })
+                  ) : (
+                    <TableCell>
+                      <h3>Cart is Empty </h3>
+                    </TableCell>
+                  )}
+                </TableRow>
+              </CardContent>
             </Card>
-          </div>
-        </div>
+          </TableBody>
+        </Table>
         <div className="mt-10  px-4 pt-8 lg:mt-0">
           <p className="text-xl font-medium">Payment Details</p>
           <p>Complete your order by providing your payment details.</p>
@@ -112,7 +191,7 @@ export function Checkout() {
                 type="text"
                 id="card-holder"
                 name="card-holder"
-                className="w-full rounded-md border  px-4 py-3 pl-11 text-sm uppercase shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500"
+                className="w-full rounded-md border  px-4 py-3 pl-11 text-sm uppercase shadow-sm outline-none focus:z-10"
                 placeholder="Your full name here"
               />
               <div className="pointer-events-none absolute inset-y-0 left-0 inline-flex items-center px-3"></div>
@@ -186,10 +265,13 @@ export function Checkout() {
             </div>
             <div className="mt-6 flex items-center justify-between">
               <p className="text-sm font-medium ">Total</p>
-              <p className="text-2xl font-semibold ">{products.length}</p>
+              {/* <p className="text-2xl font-semibold ">{total}</p> */}
             </div>
           </div>
-          <Button className="mt-4 mb-8 w-full rounded-md  px-6 py-3 font-medium ">
+          <Button
+            onClick={handleCheckout}
+            className="mt-4 mb-8 w-full rounded-md  px-6 py-3 font-medium "
+          >
             Place Order
           </Button>
         </div>
