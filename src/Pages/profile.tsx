@@ -16,9 +16,18 @@ import { useContext } from "react"
 import api from "@/api"
 import { useQuery } from "@tanstack/react-query"
 import { GlobalContext } from "@/routes/Router"
-import { Order, User } from "@/types"
+import { Address, Order, User } from "@/types"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { NavBar } from "@/components/navBar"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu"
+import { MoreHorizontal } from "lucide-react"
+import { EditUser } from "@/components/editUser"
 
 export function Profile() {
   const context = useContext(GlobalContext)
@@ -42,20 +51,22 @@ export function Profile() {
   })
   const findCustomer = state.user
   console.log(findCustomer)
-  const getOrders = async () => {
+  const getAddress = async () => {
     try {
-      const res = await api.get("/order")
+      const res = await api.post("/addresses")
       return res.data
     } catch (error) {
       console.error(error)
       return Promise.reject(new Error("Something went wrong"))
     }
   }
-  const { data: orders, error: orderError } = useQuery<Order[]>({
-    queryKey: ["order"],
-    queryFn: getOrders
+  const { data: address, error: addressError } = useQuery<Address[]>({
+    queryKey: ["address"],
+    queryFn: getAddress
   })
-  const getOrderFromUser = orders?.filter((order) => order.userId == state.user?.nameidentifier)
+  const getAddressFromUser = address?.filter(
+    (address) => address.userId == state.user?.nameidentifier
+  )
   return (
     <>
       <NavBar />
@@ -80,70 +91,66 @@ export function Profile() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Personal Information</CardTitle>
+            <CardTitle>Welcome @{state.user?.name}</CardTitle>
           </CardHeader>
           <CardContent className="grid gap-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex flex-col py-3 justify-between items-center">
-                <Label className="mb-1  md:text-lg" htmlFor="name">
-                  First Name
-                </Label>
-                <p className="text-lg font-semibold">{user?.firstName}</p>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="sm:table-cell  text-center">FirstName</TableHead>
+                  <TableHead className="sm:table-cell  text-center">LastName</TableHead>
+                  <TableHead className="sm:table-cell  text-center">Email</TableHead>
+                  <TableHead className="sm:table-cell  text-center">Phone</TableHead>
+                </TableRow>
+              </TableHeader>
 
-                <Label className="mb-1  md:text-lg" htmlFor="name">
-                  Last Name
-                </Label>
-                <p className="text-lg font-semibold">{user?.lastName}</p>
-
-                <Label className="mb-1  md:text-lg" htmlFor="phone">
-                  Email
-                  <p>{user?.email}</p>
-                </Label>
-
-                <Label htmlFor="phone">Phone</Label>
-                <p className="text-lg font-semibold">{user?.phone}</p>
-              </div>
-            </div>
+              <TableBody>
+                <TableRow>
+                  <TableCell className="sm:table-cell">{user?.firstName}</TableCell>
+                  <TableCell className="md:table-cell">{user?.lastName}</TableCell>
+                  <TableCell className="md:table-cell">{user?.email}</TableCell>
+                  <TableCell className="md:table-cell">{user?.phone}</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
           </CardContent>
           <CardFooter>
-            <Button>Save Changes</Button>
+            <Button>
+              {/* <EditUser User={user} /> */}
+              Edit Profile
+            </Button>
           </CardFooter>
         </Card>
         <div className="grid gap-6">
-          <Card>
+          <Card className="w-[300px]  !h-full">
             <CardHeader>
-              <CardTitle>Order History</CardTitle>
+              <CardTitle>Address</CardTitle>
             </CardHeader>
             <CardContent>
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Order #</TableHead>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Total</TableHead>
-                    <TableHead>Status</TableHead>
+                    <TableHead className="sm:table-cell  text-center">City</TableHead>
+                    <TableHead className="sm:table-cell  text-center">Zip</TableHead>
+                    <TableHead className="sm:table-cell  text-center">Address</TableHead>
                   </TableRow>
                 </TableHeader>
-                <TableBody className="text-left">
-                  {getOrderFromUser?.map((order) => {
-                    return (
-                      <TableRow key={order.id}>
-                        <TableCell>
-                          <Link className="font-medium" to="#">
-                            #
-                          </Link>
-                        </TableCell>
-                        {/* <TableCell>{order.date}</TableCell> */}
-                        <TableCell>$99.99</TableCell>
-                        <TableCell>
-                          <Badge variant="default">{order.status}</Badge>
-                        </TableCell>
-                      </TableRow>
-                    )
-                  })}
+
+                <TableBody>
+                  <TableRow>
+                    <TableCell className="sm:table-cell">{user?.firstName}</TableCell>
+                    <TableCell className="md:table-cell">{user?.lastName}</TableCell>
+                    <TableCell className="md:table-cell">{user?.email}</TableCell>
+                  </TableRow>
                 </TableBody>
               </Table>
             </CardContent>
+            <CardFooter>
+              <Button>
+                {/* <EditUser User={user} /> */}
+                Edit Address
+              </Button>
+            </CardFooter>
           </Card>
         </div>
       </div>

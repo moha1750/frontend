@@ -13,7 +13,7 @@ export function Login() {
   const context = useContext(GlobalContext)
   if (!context) throw Error("Context is Missing")
   const { handleStoreUser } = context
-  // const clientId = "AIzaSyC5KZPS5-yhz1DhFuWCnX5rWpRZlrWCY_Y"
+  const clientId = "73577810799-jn5dn2d51cmir5pq8ockgu0ln7de2f33.apps.googleusercontent.com"
 
   const navigate = useNavigate()
   const [user, setUser] = useState({
@@ -93,11 +93,11 @@ export function Login() {
               <Button type="submit" className="w-full">
                 Login
               </Button>
-              {/* <div id="signIn">
+              <div id="signIn">
                 <Button variant="outline" className="w-full">
                   <GoogleLogin clientId={clientId} />
                 </Button>
-              </div> */}
+              </div>
             </div>
             <div className="mt-4 text-center text-sm">
               Don&apos;t have an account?{" "}

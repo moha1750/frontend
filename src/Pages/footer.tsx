@@ -3,8 +3,12 @@ import { Link } from "react-router-dom"
 export function FooterSection() {
   return (
     <>
-      <footer>
-        <div className="flex items-center">
+      <footer
+        className="flex justify-content:space-evenly align-content: space-between mt-4
+
+"
+      >
+        <div className="flex justify-around items-center">
           <img
             className="items-center"
             src="https://i.ibb.co/WVVJYqV/Malhaja-Logo.png"

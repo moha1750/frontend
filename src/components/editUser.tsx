@@ -52,15 +52,15 @@ export function EditUser({ user }: { user: User }) {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Edit Product</DialogTitle>
+          <DialogTitle>Edit Profile</DialogTitle>
           <DialogDescription>
-            Make changes to your Product here. Click save when you are done.
+            Make changes to your Profile here. Click save when you are done.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="name" className="text-right">
-              Old value:
+              First Name
             </Label>
             <span className="col-span-3">{user.firstName}</span>
           </div>
@@ -75,6 +75,43 @@ export function EditUser({ user }: { user: User }) {
             />
           </div>
         </div>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="name" className="text-right">
+              Last Name
+            </Label>
+            <span className="col-span-3">{user.lastName}</span>
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="username" className="text-left">
+              New Value
+            </Label>
+            <Input
+              onChange={handleChange}
+              placeholder="type your update here"
+              className="col-span-3 text-left"
+            />
+          </div>
+        </div>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="name" className="text-right">
+              Phone
+            </Label>
+            <span className="col-span-3">{user.phone}</span>
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="username" className="text-left">
+              New Value
+            </Label>
+            <Input
+              onChange={handleChange}
+              placeholder="type your update here"
+              className="col-span-3 text-left"
+            />
+          </div>
+        </div>
+
         <DialogFooter>
           <Button type="submit" onClick={handleUpdate}>
             Save changes

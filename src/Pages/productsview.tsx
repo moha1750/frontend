@@ -53,7 +53,7 @@ export function ProductView() {
                 <div className="p-1">
                   <Card key={product.id} className="w-[300px]  !h-full">
                     <CardHeader>
-                      <CardTitle>{product.name}</CardTitle>
+                      <CardTitle className="align-items: baseline">{product.name}</CardTitle>
                       <CardDescription>{product.description}</CardDescription>
                     </CardHeader>
                     <CardContent>

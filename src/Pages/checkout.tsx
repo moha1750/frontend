@@ -25,9 +25,8 @@ type OrderItems = {
   stockId: string
   status: "Card"
 }
-type OrderCheckout = {
-  items: OrderItems[]
-}
+type OrderCheckout = OrderItems[]
+
 export function Checkout() {
   const context = useContext(GlobalContext)
   if (!context) throw Error("GLobal context is missing")
@@ -42,7 +41,7 @@ export function Checkout() {
     }
   }
   const groups = state.cart.reduce((acc, obj) => {
-    const key = obj.id
+    const key = obj.stockId
     const curGroup = acc[key] ?? []
     return { ...acc, [key]: [...curGroup, obj] }
   }, {} as { [productId: string]: Product[] })
@@ -57,15 +56,14 @@ export function Checkout() {
   })
   const handleCheckout = async () => {
     try {
-      const checkoutOrder: OrderCheckout = {
-        items: []
-      }
+      const checkoutOrder: OrderCheckout = []
+
       Object.keys(groups).forEach((key) => {
         const products = groups[key]
-        checkoutOrder.items.push({
+        checkoutOrder.push({
           quantity: products.length,
           amount: 0,
-          stockId: "",
+          stockId: key,
           status: "Card"
           // it should be fixed ask for help
         })
