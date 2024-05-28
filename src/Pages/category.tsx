@@ -62,6 +62,7 @@ export function Categories() {
   return (
     <>
       <NavBar />
+      <h1 className="text-2xl uppercase mb-10">Categories</h1>
       <p className="mt-2 mb-10 text-3xl font-bold tracking-tight sm:text-4xl"></p>
       <section className="flex flex-col md:flex-row gap-4 justify-between max-w-6xl mx-auto w-full">
         <Carousel className="w-full">
