@@ -67,22 +67,30 @@ export function CategoryView() {
   })
   return (
     <>
-      <p className="mt-2 mb-10 text-3xl font-bold tracking-tight sm:text-4xl">
-        <Link to="/categories">Categories</Link>
-      </p>
+      <div className="flex justify-center">
+        <p className=" flex w-fit mt-2 mb-10 text-3xl font-bold tracking-tight sm:text-4xl py-4 hover:scale-105 transition-all">
+          <Link to="/categories">Categories</Link>
+        </p>
+      </div>
       <section className="flex flex-col md:flex-row gap-4 justify-center max-w-6xl mx-auto w-full">
         <Carousel className="w-full">
           <CarouselContent className="w-full gap-2">
             {categories?.map((category) => {
               return (
-                <CarouselItem className=" basis-1/4" key={category.name}>
+                <CarouselItem
+                  className=" items-center flex  h-[400px] basis-1/4"
+                  key={category.name}
+                >
                   <div className="p-1">
                     <Link to={`/categories/${category.id}`}>
-                      <Card key={category.id} className="w-[300px] h-[600px] ">
+                      <Card
+                        key={category.id}
+                        className="w-[300px] h-fit hover:scale-105 transition-all "
+                      >
                         <CardHeader>
                           <CardTitle>{category.name}</CardTitle>
                         </CardHeader>
-                        <CardContent>
+                        <CardContent className="">
                           <img src={category.image} alt="" />
                         </CardContent>
                       </Card>
