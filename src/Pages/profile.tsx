@@ -25,21 +25,33 @@ import { EditUser } from "@/components/editUser"
 import { AddAddress } from "@/components/addAdaress"
 
 export function Profile() {
-  const [address, setAddress] = useState({
-    id: "",
-    city: "",
-    zip: "",
-    addressLine: "",
-    userId: ""
-  })
   const context = useContext(GlobalContext)
 
   if (!context) throw Error("COntext is missing")
   const { state } = context
-  const token = localStorage.getItem("token")
 
+  console.log(state.user)
+  const getAddress = async () => {
+    try {
+      const token = localStorage.getItem("token")
+      console.log(token)
+      const res = await api.get(`/addresses/${state.user?.nameidentifier}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      return res.data
+    } catch (error) {
+      console.error(error)
+      return Promise.reject(new Error("Something went wrong"))
+    }
+  }
+  const { data: address } = useQuery<Address>({
+    queryKey: ["address"],
+    queryFn: getAddress
+  })
   const getUser = async () => {
     try {
+      const token = localStorage.getItem("token")
+      console.log(token)
       const res = await api.get(`/users/email/${state.user?.emailaddress}`, {
         headers: { Authorization: `Bearer ${token}` }
       })
@@ -55,48 +67,7 @@ export function Profile() {
   })
   const findCustomer = state.user
   console.log(findCustomer)
-  const handleAddAddress = async () => {
-    try {
-      const token = localStorage.getItem("token")
-      const res = await api.post("/addresses", address, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-      return res.data
-    } catch (error) {
-      console.error(error)
-      return Promise.reject(new Error("Product already exists "))
-    }
-  }
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    console.log(value)
-    setAddress({
-      ...address,
-      [name]: value
-    })
-  }
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault()
-    await handleAddAddress()
-  }
-  // const postAddress = async () => {
-  //   try {
-  //     const res = await api.post("/addresses")
-  //     return res.data
-  //   } catch (error) {
-  //     console.error(error)
-  //     return Promise.reject(new Error("Something went wrong"))
-  //   }
-  // }
-  // const { data: address, error: addressError } = useQuery<Address>({
-  //   queryKey: ["address"],
-  //   queryFn: postAddress
-  // })
-  // const postAddress = address?.push(
-  //   (address?) => address.userId == state.user?.nameidentifier
-  // )
+
   return (
     <>
       <NavBar />
@@ -175,11 +146,7 @@ export function Profile() {
                 </TableBody>
               </Table>
             </CardContent>
-            <CardFooter>
-              <Button onClick={handleSubmit}>
-                <AddAddress address={address} />
-              </Button>
-            </CardFooter>
+            <CardFooter>{!address && <AddAddress />}</CardFooter>
           </Card>
         </div>
       </div>

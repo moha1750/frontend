@@ -16,9 +16,15 @@ import { useQueryClient } from "@tanstack/react-query"
 import { ChangeEvent, useState } from "react"
 import { Navigate } from "react-router-dom"
 
-export function AddAddress({ address }: { address: Address }) {
+export function AddAddress() {
   const queryClient = useQueryClient()
-  const [updatedAddress, setUpdatedAddress] = useState(address)
+  const [updatedAddress, setUpdatedAddress] = useState({
+    id: "",
+    city: "",
+    zip: "",
+    addressLine: "",
+    userId: ""
+  })
   const user = localStorage.getItem("user")
 
   if (!user) return <Navigate to="/" />
@@ -28,7 +34,7 @@ export function AddAddress({ address }: { address: Address }) {
 
       const addressWithUser = {
         ...updatedAddress,
-        userId: JSON.parse(user).id
+        userId: JSON.parse(user).nameidentifier
       }
       const res = await api.post(`/addresses/${updatedAddress.id}`, addressWithUser, {
         headers: {
@@ -67,12 +73,6 @@ export function AddAddress({ address }: { address: Address }) {
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
-              City{" "}
-            </Label>
-            <span className="col-span-3">{address.city}</span>
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="username" className="text-left">
               New Value
             </Label>
@@ -85,12 +85,6 @@ export function AddAddress({ address }: { address: Address }) {
           </div>
         </div>
         <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
-              Zip{" "}
-            </Label>
-            <span className="col-span-3">{address.zip}</span>
-          </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="username" className="text-left">
               New Value
@@ -105,12 +99,6 @@ export function AddAddress({ address }: { address: Address }) {
         </div>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
-              Address
-            </Label>
-            <span className="col-span-3">{address.addressLine}</span>
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="username" className="text-left">
               New Value
             </Label>
@@ -124,9 +112,7 @@ export function AddAddress({ address }: { address: Address }) {
         </div>
 
         <DialogFooter>
-          <Button type="submit" onClick={handleUpdate}>
-            Save changes
-          </Button>
+          <Button onClick={handleUpdate}>Save changes</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
