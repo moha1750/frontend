@@ -70,7 +70,7 @@ export function CategoryView() {
       <p className="mt-2 mb-10 text-3xl font-bold tracking-tight sm:text-4xl">
         <Link to="/categories">Categories</Link>
       </p>
-      <section className="flex flex-col md:flex-row gap-4 justify-between max-w-6xl mx-auto w-full">
+      <section className="flex flex-col md:flex-row gap-4 justify-center max-w-6xl mx-auto w-full">
         <Carousel className="w-full">
           <CarouselContent className="w-full gap-2">
             {categories?.map((category) => {
