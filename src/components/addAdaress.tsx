@@ -14,15 +14,23 @@ import { Label } from "@/components/ui/label"
 import { Address } from "@/types"
 import { useQueryClient } from "@tanstack/react-query"
 import { ChangeEvent, useState } from "react"
+import { Navigate } from "react-router-dom"
 
 export function AddAddress({ address }: { address: Address }) {
   const queryClient = useQueryClient()
   const [updatedAddress, setUpdatedAddress] = useState(address)
+  const user = localStorage.getItem("user")
 
+  if (!user) return <Navigate to="/" />
   const addAddress = async (updatedAddress: Address) => {
     try {
       const token = localStorage.getItem("token")
-      const res = await api.post(`/addresses/${updatedAddress.id}`, updatedAddress, {
+
+      const addressWithUser = {
+        ...updatedAddress,
+        userId: JSON.parse(user).id
+      }
+      const res = await api.post(`/addresses/${updatedAddress.id}`, addressWithUser, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -72,6 +80,7 @@ export function AddAddress({ address }: { address: Address }) {
               onChange={handleChange}
               placeholder="type your update here"
               className="col-span-3 text-left"
+              name="city"
             />
           </div>
         </div>
@@ -90,6 +99,7 @@ export function AddAddress({ address }: { address: Address }) {
               onChange={handleChange}
               placeholder="type your update here"
               className="col-span-3 text-left"
+              name="zip"
             />
           </div>
         </div>
@@ -108,6 +118,7 @@ export function AddAddress({ address }: { address: Address }) {
               onChange={handleChange}
               placeholder="type your update here"
               className="col-span-3 text-left"
+              name="addressLine"
             />
           </div>
         </div>
