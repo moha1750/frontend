@@ -65,8 +65,6 @@ export function Profile() {
     queryKey: ["user"],
     queryFn: getUser
   })
-  const findCustomer = state.user
-  console.log(findCustomer)
 
   return (
     <>

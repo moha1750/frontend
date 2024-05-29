@@ -21,8 +21,13 @@ export function ProductDetails() {
   }, {})
   const getProduct = async () => {
     try {
-      const res = await api.get(`/products/${params.productId}`)
-      return res.data
+      const res = await api.get(`/products`)
+      const products = res.data as Product[]
+      const product = products.find((product) => product.id === params.productId)
+      if (product) {
+        return product
+      }
+      return Promise.reject(new Error("Something went wrong"))
     } catch (error) {
       console.error(error)
       return Promise.reject(new Error("Something went wrong"))

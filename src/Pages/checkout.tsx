@@ -17,19 +17,24 @@ import { GlobalContext } from "@/routes/Router"
 import { Product } from "@/types"
 import { useQuery } from "@tanstack/react-query"
 import { useContext } from "react"
-import { Link } from "react-router-dom"
+import { Link, Navigate } from "react-router-dom"
 
 type OrderItems = {
   quantity: number
-  amount: number
   stockId: string
-  status: "Card"
 }
-type OrderCheckout = OrderItems[]
+
+type OrderCheckout = {
+  amount: number
+  method: string
+  userId: string | null | undefined
+  items: OrderItems[]
+}
 
 export function Checkout() {
   const context = useContext(GlobalContext)
   if (!context) throw Error("GLobal context is missing")
+
   const { handleAddToCart, handleDeleteFromCart, state, handleRemoveFromCart } = context
   const getProducts = async () => {
     try {
@@ -40,11 +45,14 @@ export function Checkout() {
       return Promise.reject(new Error("Something went wrong"))
     }
   }
+  console.log(state.cart)
   const groups = state.cart.reduce((acc, obj) => {
     const key = obj.stockId
     const curGroup = acc[key] ?? []
     return { ...acc, [key]: [...curGroup, obj] }
   }, {} as { [productId: string]: Product[] })
+
+  const total = state.cart.reduce((acc, obj) => (acc += obj.price), 0)
   // Queries
   const {
     data: products,
@@ -54,20 +62,25 @@ export function Checkout() {
     queryKey: ["products"],
     queryFn: getProducts
   })
+
+  const checkoutOrder: OrderCheckout = {
+    amount: total,
+    method: "Card",
+    userId: state.user?.nameidentifier,
+    items: []
+  }
+
+  Object.keys(groups).forEach((key) => {
+    const products = groups[key]
+    checkoutOrder.items.push({
+      quantity: products.length,
+      stockId: key
+    })
+  })
+
+  console.log(checkoutOrder)
   const handleCheckout = async () => {
     try {
-      const checkoutOrder: OrderCheckout = []
-
-      Object.keys(groups).forEach((key) => {
-        const products = groups[key]
-        checkoutOrder.push({
-          quantity: products.length,
-          amount: 0,
-          stockId: key,
-          status: "Card"
-          // it should be fixed ask for help
-        })
-      })
       const token = localStorage.getItem("token")
       const res = await api.post("/payment", checkoutOrder, {
         headers: {
@@ -258,12 +271,12 @@ export function Checkout() {
             <div className="mt-6 border-t border-b py-2">
               <div className="flex items-center justify-between">
                 <p className="text-sm font-medium ">Total Products</p>
-                <p className="font-semibold ">{products.length}</p>
+                <p className="font-semibold ">{state.cart.length}</p>
               </div>
             </div>
             <div className="mt-6 flex items-center justify-between">
               <p className="text-sm font-medium ">Total</p>
-              {/* <p className="text-2xl font-semibold ">{total}</p> */}
+              <p className="text-2xl font-semibold ">{total}</p>
             </div>
           </div>
           <Button
