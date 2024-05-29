@@ -3,19 +3,15 @@ import { Link } from "react-router-dom"
 export function FooterSection() {
   return (
     <>
-      <footer
-        className="flex justify-content:space-evenly align-content: space-between mt-4
-
-"
-      >
-        <div className="flex justify-around items-center">
+      <footer className="flex justify-around align-content: space-between mt-4 w-full">
+        <div className="flex items-center">
           <img
             className="items-center"
             src="https://i.ibb.co/WVVJYqV/Malhaja-Logo.png"
             alt="Malhaja Logo"
           />
         </div>
-        <div>
+        <div className="flex gap-4">
           <Link className="link" to="#" data-tippy-content="@facebook_handle">
             <svg
               className="h-6 fill-current "
@@ -41,19 +37,15 @@ export function FooterSection() {
           </Link>
         </div>
 
-        <div className="flex justify-between">
-          <p className="h4-font">About</p>
+        <div className="flex justify-around w-full">
           <Link to="/aboutUs">AboutUs</Link>
           <p className="h4-font">
             <Link to="/contactus">Contact Us</Link>
           </p>
+          <Link to="/Products">Products</Link>
+          <Link to="/categories">Categories</Link>
 
           {/* <Link to="/cart">T&C</Link> */}
-        </div>
-
-        <div>
-          <Link to="/Products">View Products</Link>
-          <Link to="/categories">View Categories</Link>
         </div>
       </footer>
       <div className="copy-right">

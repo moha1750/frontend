@@ -94,8 +94,8 @@ export function ProductDetails() {
             </CardHeader>
           </Card>
         </div>
-        <div className="mt-6 flex flex-col items-center align-text-top py-8 border-t border-b">
-          <p>About Product </p>
+        <div className="mt-6 flex flex-col items-left text-left align-text-top py-8 border-t border-b">
+          <p>About {product.name} </p>
           <p>{product.description}</p>
         </div>
       </div>

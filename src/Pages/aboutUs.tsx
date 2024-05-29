@@ -7,7 +7,7 @@ export function AboutUs() {
     <>
       <NavBar />
       <body>
-        <div className="max-w-4xl flex items-center h-auto lg:h-screen flex-wrap mx-auto my-32 lg:my-0 ">
+        <div className="max-w-4xl flex items-center h-auto  flex-wrap mx-auto p-5">
           <div className="mx-auto p-4 md:p-12 text-center lg:text-center shadow-xl ">
             <div className=" shadow-xl mx-auto -mt-16 h-48 w-48  bg-center bg-transparent">
               <img

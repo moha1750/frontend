@@ -51,10 +51,10 @@ export function ProductView() {
             {data?.map((product) => (
               <CarouselItem className=" basis-1/4 !h-full" key={product.id}>
                 <div className="p-1">
-                  <Card key={product.id} className="w-[300px]  !h-full">
+                  <Card key={product.id} className="w-[300px]  h-[600px]">
                     <CardHeader>
                       <CardTitle className="align-items: baseline">{product.name}</CardTitle>
-                      <CardDescription>{product.description}</CardDescription>
+                      {/* <CardDescription>{product.description}</CardDescription> */}
                     </CardHeader>
                     <CardContent>
                       <img src={product.image} alt="" />

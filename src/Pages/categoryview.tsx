@@ -78,10 +78,9 @@ export function CategoryView() {
                 <CarouselItem className=" basis-1/4" key={category.name}>
                   <div className="p-1">
                     <Link to={`/categories/${category.id}`}>
-                      <Card key={category.id} className="w-[300px] h-[600px]">
+                      <Card key={category.id} className="w-[300px] h-[600px] ">
                         <CardHeader>
-                          <CardTitle>{category.description}</CardTitle>
-                          <CardDescription>{category.description}</CardDescription>
+                          <CardTitle>{category.name}</CardTitle>
                         </CardHeader>
                         <CardContent>
                           <img src={category.image} alt="" />

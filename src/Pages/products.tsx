@@ -41,7 +41,7 @@ export function Products() {
       <section className="flex flex-col md:flex-row gap-4 justify-between max-w-6xl mx-auto">
         {data?.map((product) =>
           product.status === "Active" ? (
-            <Card key={product.id} className=" w-[300px]">
+            <Card key={product.id} className="w-[300px]  h-[600px]">
               <CardHeader>
                 <CardTitle>{product.name}</CardTitle>
               </CardHeader>

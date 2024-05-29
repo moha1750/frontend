@@ -5,6 +5,8 @@ import { ShoppingCart } from "lucide-react"
 import { useContext } from "react"
 import { GlobalContext } from "@/routes/Router"
 import { Products } from "./products"
+import { Checkout } from "./checkout"
+import { Link } from "react-router-dom"
 
 export function Cart() {
   const context = useContext(GlobalContext)
@@ -42,23 +44,26 @@ export function Cart() {
       <PopoverContent className="w-300">
         <div>
           {Object.keys(groups).length > 0 ? (
-            Object.keys(groups).map((key) => {
-              const Products = groups[key]
-              const Product = Products[0]
-              return (
-                <div className="mb-4 flex items-center gap-4" key={Product.id}>
-                  <img className="w-10 h-10 object-contain" src={Product.image} alt="" />
-                  <h3>{Product.name}</h3>
-                  <Button variant="outline" onClick={() => handleDeleteFromCart(Product.id)}>
-                    -
-                  </Button>
-                  <span className="font-bold">{Product.length}</span>
-                  <Button variant="outline" onClick={() => handleAddToCart(Product)}>
-                    +
-                  </Button>
-                </div>
-              )
-            })
+            <div>
+              {Object.keys(groups).map((key) => {
+                const Products = groups[key]
+                const Product = Products[0]
+                return (
+                  <div className="mb-4 flex items-center gap-4" key={Product.id}>
+                    <img className="w-10 h-10 object-contain" src={Product.image} alt="" />
+                    <h3>{Product.name}</h3>
+                    <Button variant="outline" onClick={() => handleDeleteFromCart(Product.id)}>
+                      -
+                    </Button>
+                    <span className="font-bold">{Product.length}</span>
+                    <Button variant="outline" onClick={() => handleAddToCart(Product)}>
+                      +
+                    </Button>
+                  </div>
+                )
+              })}
+              <Link to="/checkOut">Checkout</Link>
+            </div>
           ) : (
             <h3>Cart is Empty </h3>
           )}
