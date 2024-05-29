@@ -73,7 +73,7 @@ export function Categories() {
                   <Link to={`/categories/${category.id}`}>
                     <Card key={category.id} className="w-[300px] h-[400px]">
                       <CardHeader>
-                        <CardTitle>{category.description}</CardTitle>
+                        <CardTitle>{category.name}</CardTitle>
                         <CardDescription>{category.description}</CardDescription>
                       </CardHeader>
                       <CardContent>
