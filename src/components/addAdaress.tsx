@@ -74,7 +74,7 @@ export function AddAddress() {
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="username" className="text-left">
-              New Value
+              City
             </Label>
             <Input
               onChange={handleChange}
@@ -87,7 +87,7 @@ export function AddAddress() {
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="username" className="text-left">
-              New Value
+              Zip Code
             </Label>
             <Input
               onChange={handleChange}
@@ -100,7 +100,7 @@ export function AddAddress() {
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="username" className="text-left">
-              New Value
+              Address
             </Label>
             <Input
               onChange={handleChange}
@@ -112,7 +112,7 @@ export function AddAddress() {
         </div>
 
         <DialogFooter>
-          <Button onClick={handleUpdate}>Save changes</Button>
+          <Button onClick={handleUpdate}>Save</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
