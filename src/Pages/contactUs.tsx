@@ -23,21 +23,6 @@ export function ContactUs() {
               Simple, Luxury, Limited & Unique. A lifestyle for the dreamers, the thinkers the go
               getters. Malhaja will be there with you to show your unique personality.
             </p>
-
-            <div className="flex items-center mt-5">
-              <svg className="h-6 mr-2" fill="currentColor" viewBox="0 0 489.536 489.536"></svg>
-              <span className="mt-4 text-sm items-center">Saudi Arabia.</span>
-            </div>
-            <div className="flex items-center mt-5">
-              <svg
-                className="h-6 mr-2 "
-                fill="currentColor"
-                x="0px"
-                y="0px"
-                viewBox="0 0 60.002 60.002"
-              ></svg>
-              <span className="text-sm items-center">+966 505 666 855</span>
-            </div>
           </div>
           <form className="md:col-span-8 p-10">
             <div className="flex flex-wrap -mx-3 mb-6">
