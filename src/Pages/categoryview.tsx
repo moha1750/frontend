@@ -85,7 +85,7 @@ export function CategoryView() {
                     <Link to={`/categories/${category.id}`}>
                       <Card
                         key={category.id}
-                        className="w-[300px] h-fit hover:scale-105 transition-all "
+                        className="w-[300px] h-fit hover:scale-105 transition-all w-full text-center px-1 "
                       >
                         <CardHeader>
                           <CardTitle>{category.name}</CardTitle>
